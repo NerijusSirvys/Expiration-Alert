@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ns.expiration.expiration.alert.navigation.Destinations
+import com.ns.expiration.expiration.alert.screens.home.HomeScreen
 import com.ns.expiration.expiration.alert.ui.theme.ExpirationAlertTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,8 +24,14 @@ class MainActivity : ComponentActivity() {
          ExpirationAlertTheme {
             val navController = rememberNavController()
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-               NavHost(modifier = Modifier.padding(innerPadding), navController = navController, startDestination = Destinations.Home) {
-                  composable<Destinations.Home> { }
+               NavHost(
+                  modifier = Modifier
+                     .padding(innerPadding)
+                     .padding(horizontal = 15.dp),
+                  navController = navController,
+                  startDestination = Destinations.Home
+               ) {
+                  composable<Destinations.Home> { HomeScreen(navController = navController) }
                   composable<Destinations.NewAlert> { }
                }
             }
