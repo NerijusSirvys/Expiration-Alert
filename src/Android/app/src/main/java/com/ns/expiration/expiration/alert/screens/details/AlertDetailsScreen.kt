@@ -1,30 +1,29 @@
-package com.ns.expiration.expiration.alert.screens.home
+package com.ns.expiration.expiration.alert.screens.details
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.toRoute
 import com.ns.expiration.expiration.alert.navigation.Destinations
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun HomeScreen(
+fun AlertDetailsScreen(
    modifier: Modifier = Modifier,
-   navController: NavHostController,
+   navController: NavHostController
 ) {
-   val vm = koinViewModel<HomeScreenViewmodel>()
+   val details = navController.currentBackStackEntry?.toRoute<Destinations.AlertDetails>()
+   val vm = koinViewModel<AlertDetailsScreenViewmodel> { parametersOf(details?.id ?: "") }
    val state by vm.state.collectAsStateWithLifecycle()
 
-   HomeScreenContent(
+   AlertDetailsScreenContent(
       modifier = modifier,
       state = state,
-      onAction = vm::onAction,
-      onNavigateToNewAlert = {
-         navController.navigate(Destinations.NewAlert)
-      },
-      onNavigateToDetails = {
-         navController.navigate(Destinations.AlertDetails(it))
+      onNavigateBack = {
+         navController.navigateUp()
       }
    )
 }
