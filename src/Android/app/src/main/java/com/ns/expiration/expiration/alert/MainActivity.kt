@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ns.expiration.expiration.alert.navigation.Destinations
+import com.ns.expiration.expiration.alert.screens.details.AlertDetailsScreen
 import com.ns.expiration.expiration.alert.screens.home.HomeScreen
 import com.ns.expiration.expiration.alert.ui.theme.ExpirationAlertTheme
 
@@ -32,6 +33,7 @@ class MainActivity : ComponentActivity() {
                   startDestination = Destinations.Home
                ) {
                   composable<Destinations.Home> { HomeScreen(navController = navController) }
+                  composable<Destinations.AlertDetails> { AlertDetailsScreen(navController = navController) }
                   composable<Destinations.NewAlert> { }
                }
             }

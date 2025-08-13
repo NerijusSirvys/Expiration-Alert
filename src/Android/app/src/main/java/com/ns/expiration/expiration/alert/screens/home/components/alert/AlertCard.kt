@@ -32,6 +32,7 @@ fun AlertCard(
    modifier: Modifier = Modifier,
    imageUrl: String,
    name: String,
+   quantity: Int,
    expiration: String,
    reminders: Int,
    options: AlertCardOptions = AlertCardOptions.Default,
@@ -105,6 +106,23 @@ fun AlertCard(
                   color = options.contentColor
                )
             }
+
+            // Card content quantity
+            Row(
+               verticalAlignment = Alignment.CenterVertically,
+               horizontalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+               Icon(
+                  painter = painterResource(R.drawable.ic_stacks),
+                  contentDescription = "Quantity Icon",
+                  tint = options.contentColor,
+                  modifier = Modifier.size(18.dp)
+               )
+               Text(
+                  text = quantity.toString(),
+                  color = options.contentColor
+               )
+            }
          }
       }
    }
@@ -125,6 +143,7 @@ private fun Preview() {
             name = "Item 1",
             expiration = "12/05/2024",
             reminders = 5,
+            quantity = 5,
             imageUrl = ""
          )
       }

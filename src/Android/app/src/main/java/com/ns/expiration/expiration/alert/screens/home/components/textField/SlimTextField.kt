@@ -22,7 +22,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -50,10 +49,11 @@ fun SlimTextField(
    onTrailingIconClick: (() -> Unit)? = null,
    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
    keyboardActions: KeyboardActions = KeyboardActions.Default,
-   colors: TextFieldColors = TextFieldDefaults.colors(),
+   colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
    value: String,
    onValueChange: (String) -> Unit
 ) {
+
    Surface(
       modifier = modifier
          .height(50.dp)
@@ -65,7 +65,6 @@ fun SlimTextField(
       val interactionSource = remember { MutableInteractionSource() }
 
       val colors = colors.copy(
-         cursorColor = SunRay,
          textSelectionColors = TextSelectionColors(
             handleColor = SunRay,
             backgroundColor = SunRay
@@ -88,7 +87,7 @@ fun SlimTextField(
                   innerTextField = inner,
                   enabled = true,
                   singleLine = true,
-                  colors = colors,
+//                  colors = colors,
                   placeholder = {
                      placeholder?.let {
                         Text(
@@ -125,7 +124,7 @@ fun SlimTextField(
                         enabled = true,
                         isError = false,
                         interactionSource = interactionSource,
-                        colors = colors,
+//                        colors = colors,
                         shape = MaterialTheme.shapes.medium,
                      )
                   }
