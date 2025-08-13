@@ -23,4 +23,19 @@ class AlertDetailsScreenViewmodel(val id: String, alertRepository: AlertReposito
       started = SharingStarted.WhileSubscribed(5000),
       initialValue = AlertDetailsScreenState()
    )
+
+   fun onAction(action: AlertDetailsScreenActions) {
+      when (action) {
+         AlertDetailsScreenActions.CompleteAlert -> completeAlert()
+         AlertDetailsScreenActions.DeleteAlert -> deleteAlert()
+      }
+   }
+
+   private fun deleteAlert(): Nothing {
+      TODO("Not yet implemented")
+   }
+
+   private fun completeAlert(): Nothing {
+      TODO("Not yet implemented")
+   }
 }

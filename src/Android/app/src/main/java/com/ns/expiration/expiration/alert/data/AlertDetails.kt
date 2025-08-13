@@ -7,5 +7,6 @@ data class AlertDetails(
    val notes: String = "",
    val expirationDate: String = "",
    val reminders: List<String> = emptyList(),
-   val imageUrl: String = ""
+   val imageUrl: String = "",
+   val state: AlertState = AlertState.Active
 )

@@ -1,5 +1,6 @@
 package com.ns.expiration.expiration.alert.components
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.dp
 fun TopBar(
    modifier: Modifier = Modifier,
    navigationIcon: Painter? = null,
+   actions: @Composable RowScope.() -> Unit = {},
    onNavigation: () -> Unit = {},
    label: String,
 ) {
@@ -23,6 +25,7 @@ fun TopBar(
       modifier = modifier,
       windowInsets = WindowInsets(0.dp),
       title = { Text(text = label) },
+      actions = actions,
       navigationIcon = {
          navigationIcon?.let {
             IconButton(onClick = onNavigation) {

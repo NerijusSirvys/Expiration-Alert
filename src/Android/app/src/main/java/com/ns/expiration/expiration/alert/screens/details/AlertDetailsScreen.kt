@@ -22,8 +22,9 @@ fun AlertDetailsScreen(
    AlertDetailsScreenContent(
       modifier = modifier,
       state = state,
+      onAction = vm::onAction,
       onNavigateBack = {
          navController.navigateUp()
-      }
+      },
    )
 }

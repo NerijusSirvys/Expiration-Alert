@@ -5,35 +5,36 @@ import kotlinx.coroutines.flow.flow
 import java.util.UUID
 
 class AlertRepository {
-   fun getAllAlerts(): Flow<List<AlertOverview>> {
-      val data = listOf(
-         AlertOverview(
-            id = UUID.randomUUID().toString(),
-            name = "Alert 1",
-            image = "https://images.pexels.com/photos/2529468/pexels-photo-2529468.jpeg",
-            expiration = "11/10/2025",
-            reminders = 3,
-            quantity = 5
-         ),
-         AlertOverview(
-            id = UUID.randomUUID().toString(),
-            name = "Alert 2",
-            image = "https://images.pexels.com/photos/2529468/pexels-photo-2529468.jpeg",
-            expiration = "05/04/2026",
-            reminders = 5,
-            quantity = 1
-         ),
-         AlertOverview(
-            id = UUID.randomUUID().toString(),
-            name = "Alert 3",
-            image = "https://images.pexels.com/photos/2529468/pexels-photo-2529468.jpeg",
-            expiration = "01/10/2025",
-            reminders = 1,
-            quantity = 15
-         )
-      )
 
-      return flow { emit(data) }
+   private var _data: List<AlertOverview> = listOf(
+      AlertOverview(
+         id = UUID.randomUUID().toString(),
+         name = "Alert 1",
+         image = "https://images.pexels.com/photos/2529468/pexels-photo-2529468.jpeg",
+         expiration = "11/10/2025",
+         reminders = 3,
+         quantity = 5
+      ),
+      AlertOverview(
+         id = UUID.randomUUID().toString(),
+         name = "Alert 2",
+         image = "https://images.pexels.com/photos/2529468/pexels-photo-2529468.jpeg",
+         expiration = "05/04/2026",
+         reminders = 5,
+         quantity = 1
+      ),
+      AlertOverview(
+         id = UUID.randomUUID().toString(),
+         name = "Alert 3",
+         image = "https://images.pexels.com/photos/2529468/pexels-photo-2529468.jpeg",
+         expiration = "01/10/2025",
+         reminders = 1,
+         quantity = 15
+      )
+   )
+
+   fun getAllAlerts(): Flow<List<AlertOverview>> {
+      return flow { emit(_data) }
    }
 
    fun getAlertById(id: String): Flow<AlertDetails> {
