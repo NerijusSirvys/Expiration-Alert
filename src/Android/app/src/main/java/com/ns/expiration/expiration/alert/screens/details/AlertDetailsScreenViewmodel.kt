@@ -8,7 +8,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
-class AlertDetailsScreenViewmodel(val id: String, alertRepository: AlertRepository) : ViewModel() {
+class AlertDetailsScreenViewmodel(
+   val id: String,
+   alertRepository: AlertRepository
+) : ViewModel() {
 
    private val _details = alertRepository.getAlertById(id)
    private val _state = MutableStateFlow(AlertDetailsScreenState())

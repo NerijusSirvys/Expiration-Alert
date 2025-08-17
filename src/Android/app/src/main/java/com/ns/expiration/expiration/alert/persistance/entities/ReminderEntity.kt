@@ -14,5 +14,5 @@ data class ReminderEntity(
    val range: ReminderRange,
    val value: Int,
    val createdOn: LocalDateTime,
-   val modifiedOn: LocalDateTime
+   val modifiedOn: LocalDateTime? = null
 )

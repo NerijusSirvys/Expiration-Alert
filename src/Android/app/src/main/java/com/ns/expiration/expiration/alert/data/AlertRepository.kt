@@ -1,53 +1,43 @@
 package com.ns.expiration.expiration.alert.data
 
+import com.ns.expiration.expiration.alert.persistance.dao.AlertDao
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import java.util.UUID
+import kotlinx.coroutines.flow.mapLatest
 
-class AlertRepository {
-
-   private var _data: List<AlertOverview> = listOf(
-      AlertOverview(
-         id = UUID.randomUUID().toString(),
-         name = "Alert 1",
-         image = "https://images.pexels.com/photos/2529468/pexels-photo-2529468.jpeg",
-         expiration = "11/10/2025",
-         reminders = 3,
-         quantity = 5
-      ),
-      AlertOverview(
-         id = UUID.randomUUID().toString(),
-         name = "Alert 2",
-         image = "https://images.pexels.com/photos/2529468/pexels-photo-2529468.jpeg",
-         expiration = "05/04/2026",
-         reminders = 5,
-         quantity = 1
-      ),
-      AlertOverview(
-         id = UUID.randomUUID().toString(),
-         name = "Alert 3",
-         image = "https://images.pexels.com/photos/2529468/pexels-photo-2529468.jpeg",
-         expiration = "01/10/2025",
-         reminders = 1,
-         quantity = 15
-      )
-   )
-
-   fun getAllAlerts(): Flow<List<AlertOverview>> {
-      return flow { emit(_data) }
+@OptIn(ExperimentalCoroutinesApi::class)
+class AlertRepository(
+   val alertDao: AlertDao
+) {
+   fun getAlertOverviews(): Flow<List<AlertOverview>> {
+      return alertDao.getAllAlertsWithReminders().mapLatest { dataList ->
+         dataList.map {
+            AlertOverview(
+               id = it.alert.id,
+               name = it.alert.name,
+               quantity = it.alert.quantity,
+               image = it.alert.imageUrl,
+               expiration = it.alert.expirationDate.toString(),
+               reminders = it.reminders.size
+            )
+         }
+      }
    }
 
    fun getAlertById(id: String): Flow<AlertDetails> {
-      val details = AlertDetails(
-         id = id,
-         name = "My Alert",
-         quantity = 15,
-         notes = "Some information about the alert that should be very important to know",
-         expirationDate = "01/10/2025",
-         reminders = listOf("2 days until expiration", "14 days until expiration"),
-         imageUrl = "https://images.pexels.com/photos/2529468/pexels-photo-2529468.jpeg"
-      )
-
-      return flow { emit(details) }
+      return alertDao.getAlertDetails(id).mapLatest { alert ->
+         AlertDetails(
+            id = alert.alert.id,
+            name = alert.alert.name,
+            quantity = alert.alert.quantity,
+            notes = alert.alert.notes,
+            expirationDate = alert.alert.expirationDate.toString(),
+            reminders = alert.reminders.map {
+               "${it.value} ${it.range} until expiration"
+            },
+            imageUrl = alert.alert.imageUrl,
+            state = alert.alert.state
+         )
+      }
    }
 }

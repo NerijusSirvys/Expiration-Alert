@@ -36,6 +36,10 @@ android {
    buildFeatures {
       compose = true
    }
+
+   configurations.configureEach {
+      exclude(group = "com.intellij", module = "annotations")
+   }
 }
 
 dependencies {
@@ -55,6 +59,8 @@ dependencies {
    implementation(libs.room.runtime)
    implementation(libs.room.compiler)
    implementation(libs.room.ktx)
+
+   ksp(libs.room.compiler)
 
    implementation(libs.androidx.navigation.compose)
    implementation(libs.androidx.core.ktx)

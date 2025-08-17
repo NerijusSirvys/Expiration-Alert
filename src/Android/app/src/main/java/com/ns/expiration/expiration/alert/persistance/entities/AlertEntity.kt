@@ -18,6 +18,6 @@ data class AlertEntity(
    val state: AlertState,
    val expirationDate: LocalDate,
    val createdOn: LocalDateTime,
-   val modifiedOn: LocalDateTime
+   val modifiedOn: LocalDateTime? = null
 )
 
