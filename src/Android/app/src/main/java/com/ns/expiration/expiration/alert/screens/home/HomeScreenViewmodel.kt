@@ -13,7 +13,7 @@ class HomeScreenViewmodel(
    alertRepository: AlertRepository
 ) : ViewModel() {
 
-   private val _data = alertRepository.getAllAlerts()
+   private var _data = alertRepository.getAlertOverviews()
    private val _state = MutableStateFlow(HomeScreenState())
 
    val state = combine(_data, _state) { data, state ->
