@@ -3,7 +3,6 @@ package com.ns.expiration.expiration.alert.repositories
 import com.ns.expiration.expiration.alert.persistance.dao.AlertDao
 import com.ns.expiration.expiration.alert.repositories.data.AlertDetails
 import com.ns.expiration.expiration.alert.repositories.data.AlertOverview
-import com.ns.expiration.expiration.alert.repositories.data.AlertState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,7 +13,7 @@ class AlertRepository(
    val alertDao: AlertDao
 ) {
    fun getActiveAlertOverviews(): Flow<List<AlertOverview>> {
-      return alertDao.getAllAlertsWithReminders(AlertState.Active).mapLatest { dataList ->
+      return alertDao.getAllAlertsWithReminders().mapLatest { dataList ->
          dataList.map {
             AlertOverview(
                id = it.alert.id,
@@ -40,19 +39,10 @@ class AlertRepository(
                "${it.value} ${it.range} until expiration"
             },
             imageUrl = alert.alert.imageUrl,
-            state = alert.alert.state
          )
       }
 
       return flow { emit(data) }
-   }
-
-   suspend fun completeAlert(id: String) {
-      if (id.isEmpty())
-         throw IllegalArgumentException("Id cannot be empty")
-
-      val alert = alertDao.getAlert(id)
-      alertDao.updateAlert(alert.copy(state = AlertState.Complete))
    }
 
    suspend fun deleteAlert(id: String) {

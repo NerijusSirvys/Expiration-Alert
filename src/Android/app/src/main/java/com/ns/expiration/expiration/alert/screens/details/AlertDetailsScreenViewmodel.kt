@@ -40,7 +40,6 @@ class AlertDetailsScreenViewmodel(
 
    fun onAction(action: AlertDetailsScreenActions) {
       when (action) {
-         AlertDetailsScreenActions.CompleteAlert -> completeAlert()
          AlertDetailsScreenActions.DeleteAlert -> deleteAlert()
       }
    }
@@ -53,18 +52,6 @@ class AlertDetailsScreenViewmodel(
          } catch (e: Exception) {
             Log.e(AlertDetailsScreenViewmodel::class.qualifiedName, "Failed to delete alert", e)
             _channel.send(AlertDetailScreenEvents.AlertDelete(AlertActionResult.Failed))
-         }
-      }
-   }
-
-   private fun completeAlert() {
-      viewModelScope.launch(Dispatchers.IO) {
-         try {
-            alertRepository.completeAlert(id)
-            _channel.send(AlertDetailScreenEvents.AlertComplete(AlertActionResult.Success))
-         } catch (e: Exception) {
-            Log.e(AlertDetailsScreenViewmodel::class.qualifiedName, "Failed to complete alert", e)
-            _channel.send(AlertDetailScreenEvents.AlertComplete(AlertActionResult.Failed))
          }
       }
    }
