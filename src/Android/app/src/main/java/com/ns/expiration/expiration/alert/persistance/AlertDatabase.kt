@@ -3,8 +3,6 @@ package com.ns.expiration.expiration.alert.persistance
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.ns.expiration.expiration.alert.data.AlertState
-import com.ns.expiration.expiration.alert.data.ReminderRange
 import com.ns.expiration.expiration.alert.persistance.converters.AlertStateConverter
 import com.ns.expiration.expiration.alert.persistance.converters.LocalDateConverter
 import com.ns.expiration.expiration.alert.persistance.converters.LocalDateTimeConverter
@@ -12,6 +10,8 @@ import com.ns.expiration.expiration.alert.persistance.dao.AlertDao
 import com.ns.expiration.expiration.alert.persistance.entities.AlertEntity
 import com.ns.expiration.expiration.alert.persistance.entities.AlertWithReminders
 import com.ns.expiration.expiration.alert.persistance.entities.ReminderEntity
+import com.ns.expiration.expiration.alert.repositories.data.AlertState
+import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

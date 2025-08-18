@@ -1,4 +1,4 @@
-package com.ns.expiration.expiration.alert.data
+package com.ns.expiration.expiration.alert.repositories.data
 
 data class AlertOverview(
    val id: String,

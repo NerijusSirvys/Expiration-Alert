@@ -1,6 +1,9 @@
-package com.ns.expiration.expiration.alert.data
+package com.ns.expiration.expiration.alert.repositories
 
 import com.ns.expiration.expiration.alert.persistance.dao.AlertDao
+import com.ns.expiration.expiration.alert.repositories.data.AlertDetails
+import com.ns.expiration.expiration.alert.repositories.data.AlertOverview
+import com.ns.expiration.expiration.alert.repositories.data.AlertState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -10,8 +13,8 @@ import kotlinx.coroutines.flow.mapLatest
 class AlertRepository(
    val alertDao: AlertDao
 ) {
-   fun getAlertOverviews(): Flow<List<AlertOverview>> {
-      return alertDao.getAllAlertsWithReminders().mapLatest { dataList ->
+   fun getActiveAlertOverviews(): Flow<List<AlertOverview>> {
+      return alertDao.getAllAlertsWithReminders(AlertState.Active).mapLatest { dataList ->
          dataList.map {
             AlertOverview(
                id = it.alert.id,

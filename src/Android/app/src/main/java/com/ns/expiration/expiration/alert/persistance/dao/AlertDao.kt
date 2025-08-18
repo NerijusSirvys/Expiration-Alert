@@ -10,14 +10,15 @@ import androidx.room.Update
 import com.ns.expiration.expiration.alert.persistance.entities.AlertEntity
 import com.ns.expiration.expiration.alert.persistance.entities.AlertWithReminders
 import com.ns.expiration.expiration.alert.persistance.entities.ReminderEntity
+import com.ns.expiration.expiration.alert.repositories.data.AlertState
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AlertDao {
 
    @Transaction
-   @Query("SELECT * FROM alerts")
-   fun getAllAlertsWithReminders(): Flow<List<AlertWithReminders>>
+   @Query("SELECT * FROM alerts WHERE state = :state")
+   fun getAllAlertsWithReminders(state: AlertState): Flow<List<AlertWithReminders>>
 
    @Transaction
    @Query("SELECT * FROM alerts WHERE id = :id")

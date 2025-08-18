@@ -2,7 +2,7 @@ package com.ns.expiration.expiration.alert.persistance.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.ns.expiration.expiration.alert.data.ReminderRange
+import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
 import java.time.LocalDateTime
 import java.util.UUID
 
