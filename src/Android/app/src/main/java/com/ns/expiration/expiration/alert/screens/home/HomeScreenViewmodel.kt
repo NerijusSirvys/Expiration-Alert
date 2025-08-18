@@ -2,7 +2,7 @@ package com.ns.expiration.expiration.alert.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ns.expiration.expiration.alert.data.AlertRepository
+import com.ns.expiration.expiration.alert.repositories.AlertRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -13,7 +13,7 @@ class HomeScreenViewmodel(
    alertRepository: AlertRepository
 ) : ViewModel() {
 
-   private var _data = alertRepository.getAlertOverviews()
+   private var _data = alertRepository.getActiveAlertOverviews()
    private val _state = MutableStateFlow(HomeScreenState())
 
    val state = combine(_data, _state) { data, state ->

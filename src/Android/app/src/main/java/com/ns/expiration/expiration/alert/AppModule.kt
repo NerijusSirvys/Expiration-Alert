@@ -1,6 +1,6 @@
 package com.ns.expiration.expiration.alert
 
-import com.ns.expiration.expiration.alert.data.AlertRepository
+import com.ns.expiration.expiration.alert.repositories.AlertRepository
 import com.ns.expiration.expiration.alert.screens.details.AlertDetailsScreenViewmodel
 import com.ns.expiration.expiration.alert.screens.home.HomeScreenViewmodel
 import org.koin.core.module.dsl.factoryOf

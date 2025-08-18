@@ -1,6 +1,6 @@
 package com.ns.expiration.expiration.alert.screens.home
 
-import com.ns.expiration.expiration.alert.data.AlertOverview
+import com.ns.expiration.expiration.alert.repositories.data.AlertOverview
 
 data class HomeScreenState(
    val isLoading: Boolean = false,

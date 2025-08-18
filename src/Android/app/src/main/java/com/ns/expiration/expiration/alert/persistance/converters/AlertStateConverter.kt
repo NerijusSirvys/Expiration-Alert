@@ -1,7 +1,7 @@
 package com.ns.expiration.expiration.alert.persistance.converters
 
 import androidx.room.TypeConverter
-import com.ns.expiration.expiration.alert.data.AlertState
+import com.ns.expiration.expiration.alert.repositories.data.AlertState
 
 class AlertStateConverter {
    @TypeConverter
