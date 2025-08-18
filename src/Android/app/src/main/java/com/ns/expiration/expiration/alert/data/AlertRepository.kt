@@ -56,7 +56,6 @@ class AlertRepository(
       if (id.isEmpty())
          throw IllegalArgumentException("Id cannot be empty")
 
-      throw IllegalArgumentException("Id cannot be empty")
       alertDao.deleteAlertWithReminders(id)
    }
 }
