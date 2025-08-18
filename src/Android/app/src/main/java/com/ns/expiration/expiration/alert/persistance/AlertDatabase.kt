@@ -3,14 +3,12 @@ package com.ns.expiration.expiration.alert.persistance
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.ns.expiration.expiration.alert.persistance.converters.AlertStateConverter
 import com.ns.expiration.expiration.alert.persistance.converters.LocalDateConverter
 import com.ns.expiration.expiration.alert.persistance.converters.LocalDateTimeConverter
 import com.ns.expiration.expiration.alert.persistance.dao.AlertDao
 import com.ns.expiration.expiration.alert.persistance.entities.AlertEntity
 import com.ns.expiration.expiration.alert.persistance.entities.AlertWithReminders
 import com.ns.expiration.expiration.alert.persistance.entities.ReminderEntity
-import com.ns.expiration.expiration.alert.repositories.data.AlertState
 import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +22,6 @@ import java.time.LocalDateTime
    version = 1
 )
 @TypeConverters(
-   AlertStateConverter::class,
    LocalDateConverter::class,
    LocalDateTimeConverter::class
 )
@@ -53,7 +50,6 @@ abstract class AlertDatabase() : RoomDatabase() {
                   quantity = 3,
                   notes = "Some Random Stuff",
                   imageUrl = "https://images.pexels.com/photos/2529468/pexels-photo-2529468.jpeg",
-                  state = AlertState.Active,
                   expirationDate = LocalDate.now().plusDays(13),
                   createdOn = LocalDateTime.now(),
                ),
@@ -72,7 +68,6 @@ abstract class AlertDatabase() : RoomDatabase() {
                   quantity = 1,
                   notes = "Some Random Stuff about second alert",
                   imageUrl = "https://images.pexels.com/photos/2529468/pexels-photo-2529468.jpeg",
-                  state = AlertState.Active,
                   expirationDate = LocalDate.now().plusDays(4),
                   createdOn = LocalDateTime.now(),
                ),
@@ -97,7 +92,6 @@ abstract class AlertDatabase() : RoomDatabase() {
                   quantity = 25,
                   notes = "Some Random Stuff again",
                   imageUrl = "https://images.pexels.com/photos/2529468/pexels-photo-2529468.jpeg",
-                  state = AlertState.Active,
                   expirationDate = LocalDate.now().plusDays(30),
                   createdOn = LocalDateTime.now(),
                ),
