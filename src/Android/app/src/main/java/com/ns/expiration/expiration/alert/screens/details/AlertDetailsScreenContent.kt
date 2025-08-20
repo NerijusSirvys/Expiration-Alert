@@ -18,11 +18,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
 import com.ns.expiration.expiration.alert.R
 import com.ns.expiration.expiration.alert.components.TopBar
 import com.ns.expiration.expiration.alert.screens.details.components.InformationCard
+import com.ns.expiration.expiration.alert.screens.home.components.alert.CardImageError
+import com.ns.expiration.expiration.alert.screens.home.components.alert.CardImageLoader
 import com.ns.expiration.expiration.alert.ui.theme.RedSalsa
+import com.ns.expiration.expiration.alert.ui.theme.SunRay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,10 +92,16 @@ fun AlertDetailsScreenContent(
          }
 
          InformationCard(modifier = modifier, label = "Image") {
-            AsyncImage(
+            SubcomposeAsyncImage(
+               modifier = modifier.fillMaxWidth(),
                model = state.data.imageUrl,
-               contentDescription = null,
+               clipToBounds = true,
                contentScale = ContentScale.FillWidth,
+               contentDescription = "Card Image",
+               loading = { CardImageLoader(color = SunRay) },
+               error = {
+                  CardImageError(text = "Not Found")
+               }
             )
          }
 
