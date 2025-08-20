@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import com.ns.expiration.expiration.alert.ui.theme.CharcoalGrey
+import com.ns.expiration.expiration.alert.ui.theme.Background
 import com.ns.expiration.expiration.alert.ui.theme.ExpirationAlertTheme
 import com.ns.expiration.expiration.alert.ui.theme.SunRay
 
@@ -21,7 +21,7 @@ fun FloatingActionButton(
       modifier = modifier,
       onClick = onClick,
       containerColor = SunRay,
-      contentColor = CharcoalGrey
+      contentColor = Background
    ) {
       Text(text = text)
    }
