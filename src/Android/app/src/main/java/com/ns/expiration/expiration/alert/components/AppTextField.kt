@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
-import com.ns.expiration.expiration.alert.ui.theme.SlateGrey
+import com.ns.expiration.expiration.alert.ui.theme.OnPrimary
 
 @Composable
 fun AppTextField(
@@ -62,12 +62,12 @@ fun AppTextField(
       placeholder = placeholder,
       leadingIcon = leadingIcon,
       colors = OutlinedTextFieldDefaults.colors(
-         focusedBorderColor = SlateGrey,
-         unfocusedBorderColor = SlateGrey,
-         focusedPlaceholderColor = SlateGrey,
-         unfocusedPlaceholderColor = SlateGrey,
-         focusedLabelColor = SlateGrey,
-         unfocusedLabelColor = SlateGrey
+         focusedBorderColor = OnPrimary,
+         unfocusedBorderColor = OnPrimary,
+         focusedPlaceholderColor = OnPrimary,
+         unfocusedPlaceholderColor = OnPrimary,
+         focusedLabelColor = OnPrimary,
+         unfocusedLabelColor = OnPrimary
       )
    )
 }
