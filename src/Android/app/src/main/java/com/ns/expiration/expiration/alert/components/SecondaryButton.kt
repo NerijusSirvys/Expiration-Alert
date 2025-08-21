@@ -1,0 +1,30 @@
+package com.ns.expiration.expiration.alert.components
+
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
+import com.ns.expiration.expiration.alert.ui.theme.RedSalsa
+
+@Composable
+fun SecondaryButton(
+   modifier: Modifier = Modifier,
+   text: String,
+   onClick: () -> Unit
+) {
+   OutlinedButton(
+      onClick = onClick,
+      modifier = modifier.fillMaxWidth(),
+      border = ButtonDefaults.outlinedButtonBorder().copy(
+         brush = SolidColor(RedSalsa)
+      ),
+      colors = ButtonDefaults.outlinedButtonColors(
+         contentColor = RedSalsa
+      )
+   ) {
+      Text(text = text)
+   }
+}
