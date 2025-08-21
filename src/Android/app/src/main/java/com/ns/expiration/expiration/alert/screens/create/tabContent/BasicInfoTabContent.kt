@@ -26,18 +26,25 @@ import com.ns.expiration.expiration.alert.utilities.DateTimeHelpers
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BasicInfoTabContent(modifier: Modifier = Modifier) {
+fun BasicInfoTabContent(
+   modifier: Modifier = Modifier,
+   name: String,
+   notes: String,
+   expirationDate: Long?,
+   onNameChange: (String) -> Unit,
+   onNotesChange: (String) -> Unit,
+   onExpirationSet: (Long) -> Unit,
+) {
    Column {
-
       AppTextField(
-         value = "",
-         onValueChange = {},
+         value = name,
+         onValueChange = { onNameChange.invoke(it) },
          label = { Text(text = "Name") }
       )
 
       AppTextField(
-         value = "",
-         onValueChange = {},
+         value = notes,
+         onValueChange = { onNotesChange.invoke(it) },
          label = { Text(text = "Notes") },
          minLines = 4,
          maxLines = 4
@@ -47,14 +54,13 @@ fun BasicInfoTabContent(modifier: Modifier = Modifier) {
 
       Text(
          text = "Select expiration date",
-         style = MaterialTheme.typography.headlineMedium
+         style = MaterialTheme.typography.headlineSmall
       )
 
-      var selectedDate by remember { mutableStateOf<Long?>(null) }
       var showModal by remember { mutableStateOf(false) }
 
       AppTextField(
-         value = selectedDate?.let { DateTimeHelpers.convertMillisToDate(it) } ?: "",
+         value = expirationDate?.let { DateTimeHelpers.convertMillisToDate(it) } ?: "",
          onValueChange = { },
          label = { Text("Date") },
          placeholder = { Text("MM/DD/YYYY") },
@@ -65,7 +71,7 @@ fun BasicInfoTabContent(modifier: Modifier = Modifier) {
             )
          },
          modifier = Modifier
-            .pointerInput(selectedDate) {
+            .pointerInput(expirationDate) {
                awaitEachGesture {
                   awaitFirstDown(pass = PointerEventPass.Initial)
                   val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
@@ -73,19 +79,18 @@ fun BasicInfoTabContent(modifier: Modifier = Modifier) {
                      showModal = true
                   }
                }
-
             }
       )
 
       if (showModal) {
          DatePickerModal(
-            onDateSelected = { selectedDate = it },
+            onDateSelected = {
+               it?.let {
+                  onExpirationSet.invoke(it)
+               }
+            },
             onDismiss = { showModal = false }
          )
       }
    }
 }
-
-
-
-

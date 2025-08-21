@@ -25,12 +25,15 @@ import com.ns.expiration.expiration.alert.components.TopBar
 import com.ns.expiration.expiration.alert.screens.create.data.AlertScreenTabs
 import com.ns.expiration.expiration.alert.screens.create.data.tabs
 import com.ns.expiration.expiration.alert.screens.create.tabContent.BasicInfoTabContent
+import com.ns.expiration.expiration.alert.screens.create.tabContent.RemindersTabContent
 import com.ns.expiration.expiration.alert.ui.theme.SunRay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateAlertScreenContent(
    modifier: Modifier = Modifier,
+   state: CreateNewAlertScreenState,
+   onAction: (CreateAlertScreenActions) -> Unit,
    onNavigateBack: () -> Unit,
 ) {
    Scaffold(
@@ -41,7 +44,7 @@ fun CreateAlertScreenContent(
             navigationIcon = painterResource(R.drawable.ic_back_arrow),
             onNavigation = onNavigateBack,
             actions = {
-               IconButton(onClick = {}) {
+               IconButton(onClick = { onAction.invoke(CreateAlertScreenActions.Save) }) {
                   Icon(
                      painter = painterResource(R.drawable.ic_save),
                      contentDescription = "Save alert icon"
@@ -81,8 +84,16 @@ fun CreateAlertScreenContent(
             contentAlignment = Alignment.TopCenter
          ) { targetState ->
             when (targetState) {
-               AlertScreenTabs.BasicInfo -> BasicInfoTabContent()
-               AlertScreenTabs.Reminders -> Text(text = "Reminders Screen")
+               AlertScreenTabs.BasicInfo -> BasicInfoTabContent(
+                  name = state.name,
+                  notes = state.notes,
+                  expirationDate = state.expirationDate,
+                  onNameChange = { onAction.invoke(CreateAlertScreenActions.UpdateName(it)) },
+                  onNotesChange = { onAction.invoke(CreateAlertScreenActions.UpdateNotes(it)) },
+                  onExpirationSet = { onAction.invoke(CreateAlertScreenActions.SetExpirationDate(it)) }
+               )
+
+               AlertScreenTabs.Reminders -> RemindersTabContent()
                AlertScreenTabs.Picture -> Text(text = "Picture Screen")
             }
          }
