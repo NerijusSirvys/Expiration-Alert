@@ -67,7 +67,8 @@ fun AppTextField(
          focusedPlaceholderColor = OnPrimary,
          unfocusedPlaceholderColor = OnPrimary,
          focusedLabelColor = OnPrimary,
-         unfocusedLabelColor = OnPrimary
+         unfocusedLabelColor = OnPrimary,
+         cursorColor = OnPrimary
       )
    )
 }

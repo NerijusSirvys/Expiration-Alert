@@ -5,14 +5,9 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 
 private val DarkColorScheme = darkColorScheme(
-   primary = Primary,
-   onPrimary = OnPrimary,
-   secondary = PurpleGrey80,
-   tertiary = Pink80,
    background = Background,
    surface = Background,
-
-   )
+)
 
 @Composable
 fun ExpirationAlertTheme(

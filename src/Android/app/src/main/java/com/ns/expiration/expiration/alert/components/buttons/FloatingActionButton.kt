@@ -1,4 +1,4 @@
-package com.ns.expiration.expiration.alert.components
+package com.ns.expiration.expiration.alert.components.buttons
 
 import android.content.res.Configuration
 import androidx.compose.material3.ExtendedFloatingActionButton

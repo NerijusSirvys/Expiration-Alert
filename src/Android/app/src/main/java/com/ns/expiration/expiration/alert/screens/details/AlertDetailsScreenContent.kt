@@ -17,8 +17,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import com.ns.expiration.expiration.alert.R
-import com.ns.expiration.expiration.alert.components.SecondaryButton
 import com.ns.expiration.expiration.alert.components.TopBar
+import com.ns.expiration.expiration.alert.components.buttons.SecondaryButton
 import com.ns.expiration.expiration.alert.screens.details.components.InformationCard
 import com.ns.expiration.expiration.alert.screens.home.components.alert.CardImageError
 import com.ns.expiration.expiration.alert.screens.home.components.alert.CardImageLoader

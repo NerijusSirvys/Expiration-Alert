@@ -18,8 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ns.expiration.expiration.alert.R
 import com.ns.expiration.expiration.alert.components.AppTextField
-import com.ns.expiration.expiration.alert.components.FloatingActionButton
 import com.ns.expiration.expiration.alert.components.PainterIcon
+import com.ns.expiration.expiration.alert.components.buttons.FloatingActionButton
 import com.ns.expiration.expiration.alert.screens.home.components.alert.AlertCard
 
 @Composable
