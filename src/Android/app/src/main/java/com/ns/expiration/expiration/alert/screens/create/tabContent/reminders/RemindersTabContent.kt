@@ -34,7 +34,10 @@ fun RemindersTabContent(
 ) {
    var showReminderDialog by remember { mutableStateOf(false) }
 
-   Column(horizontalAlignment = Alignment.CenterHorizontally) {
+   Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+      modifier = modifier.padding(top = 10.dp),
+   ) {
       RemindersLazyList(
          modifier = Modifier.maxHeight(0.75f),
          reminders = reminders
