@@ -25,7 +25,7 @@ import com.ns.expiration.expiration.alert.components.TopBar
 import com.ns.expiration.expiration.alert.screens.create.data.AlertScreenTabs
 import com.ns.expiration.expiration.alert.screens.create.data.tabs
 import com.ns.expiration.expiration.alert.screens.create.tabContent.BasicInfoTabContent
-import com.ns.expiration.expiration.alert.screens.create.tabContent.RemindersTabContent
+import com.ns.expiration.expiration.alert.screens.create.tabContent.reminders.RemindersTabContent
 import com.ns.expiration.expiration.alert.ui.theme.SunRay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,7 +93,13 @@ fun CreateAlertScreenContent(
                   onExpirationSet = { onAction.invoke(CreateAlertScreenActions.SetExpirationDate(it)) }
                )
 
-               AlertScreenTabs.Reminders -> RemindersTabContent()
+               AlertScreenTabs.Reminders -> RemindersTabContent(
+                  reminders = state.reminders,
+                  onReminderCreate = { value, range ->
+                     onAction.invoke(CreateAlertScreenActions.CreateReminder(value, range))
+                  }
+               )
+
                AlertScreenTabs.Picture -> Text(text = "Picture Screen")
             }
          }
