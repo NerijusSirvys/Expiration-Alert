@@ -25,7 +25,7 @@ import com.ns.expiration.expiration.alert.R
 import com.ns.expiration.expiration.alert.components.TopBar
 import com.ns.expiration.expiration.alert.screens.create.data.AlertScreenTabs
 import com.ns.expiration.expiration.alert.screens.create.data.tabs
-import com.ns.expiration.expiration.alert.screens.create.tabContent.BasicInfoTabContent
+import com.ns.expiration.expiration.alert.screens.create.tabContent.basicInfo.BasicInfoTabContent
 import com.ns.expiration.expiration.alert.screens.create.tabContent.reminders.RemindersTabContent
 
 @OptIn(ExperimentalMaterial3Api::class)

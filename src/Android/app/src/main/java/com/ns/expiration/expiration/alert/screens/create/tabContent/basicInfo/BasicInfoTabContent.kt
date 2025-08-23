@@ -1,4 +1,4 @@
-package com.ns.expiration.expiration.alert.screens.create.tabContent
+package com.ns.expiration.expiration.alert.screens.create.tabContent.basicInfo
 
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
