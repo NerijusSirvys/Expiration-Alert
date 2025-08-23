@@ -2,12 +2,11 @@ package com.ns.expiration.expiration.alert.screens.create.tabContent.reminders.c
 
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
-import com.ns.expiration.expiration.alert.ui.theme.Background
-import com.ns.expiration.expiration.alert.ui.theme.Primary
 
 @Composable
 fun ReminderRangeChip(
@@ -22,8 +21,8 @@ fun ReminderRangeChip(
       onClick = onClick,
       label = { Text(range.name) },
       colors = FilterChipDefaults.filterChipColors(
-         selectedContainerColor = Primary,
-         selectedLabelColor = Background
+         selectedContainerColor = MaterialTheme.colorScheme.primary,
+         selectedLabelColor = MaterialTheme.colorScheme.background
       )
    )
 }

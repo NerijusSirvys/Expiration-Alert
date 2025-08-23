@@ -56,7 +56,6 @@ fun AppTextField(
       maxLines = maxLines,
       minLines = minLines,
       interactionSource = interactionSource,
-
       onValueChange = { onValueChange.invoke(it) },
       shape = MaterialTheme.shapes.medium,
       placeholder = placeholder,

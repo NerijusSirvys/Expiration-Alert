@@ -4,7 +4,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.ns.expiration.expiration.alert.ui.theme.White
 
 @Composable
 fun AppTextButton(
@@ -18,7 +17,6 @@ fun AppTextButton(
    ) {
       Text(
          text = text,
-         color = White
       )
    }
 }

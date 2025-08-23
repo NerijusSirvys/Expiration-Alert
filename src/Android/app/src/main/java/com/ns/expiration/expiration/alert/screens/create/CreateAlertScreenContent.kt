@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -26,7 +27,6 @@ import com.ns.expiration.expiration.alert.screens.create.data.AlertScreenTabs
 import com.ns.expiration.expiration.alert.screens.create.data.tabs
 import com.ns.expiration.expiration.alert.screens.create.tabContent.BasicInfoTabContent
 import com.ns.expiration.expiration.alert.screens.create.tabContent.reminders.RemindersTabContent
-import com.ns.expiration.expiration.alert.ui.theme.SunRay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,15 +54,16 @@ fun CreateAlertScreenContent(
          )
       }
    ) { innerPadding ->
-      Column {
+      Column(
+         modifier.padding(innerPadding)
+      ) {
          var selectedTab by remember { mutableStateOf(AlertScreenTabs.BasicInfo) }
          TabRow(
             selectedTabIndex = selectedTab.ordinal,
-            modifier = modifier.padding(innerPadding),
             indicator = {
                TabRowDefaults.SecondaryIndicator(
                   modifier = Modifier.tabIndicatorOffset(it[selectedTab.ordinal]),
-                  color = SunRay
+                  color = MaterialTheme.colorScheme.primary
                )
             }
          ) {

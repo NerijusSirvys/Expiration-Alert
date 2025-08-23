@@ -51,7 +51,8 @@ fun HomeScreenContent(
             leadingIcon = {
                PainterIcon(
                   iconId = R.drawable.ic_search,
-                  contentDescription = "Search Field Icon"
+                  contentDescription = "Search Field Icon",
+                  tint = MaterialTheme.colorScheme.onPrimary
                )
             }
          )

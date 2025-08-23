@@ -67,7 +67,8 @@ fun BasicInfoTabContent(
          trailingIcon = {
             PainterIcon(
                iconId = R.drawable.ic_date_range,
-               contentDescription = "Select date"
+               contentDescription = "Select date",
+               tint = MaterialTheme.colorScheme.onPrimary
             )
          },
          modifier = Modifier

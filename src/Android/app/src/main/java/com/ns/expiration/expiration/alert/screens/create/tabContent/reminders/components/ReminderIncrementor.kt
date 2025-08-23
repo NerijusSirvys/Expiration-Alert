@@ -34,12 +34,12 @@ fun ReminderIncrementor(
       ) {
          PainterIcon(
             iconId = R.drawable.ic_remove,
-            contentDescription = "Minus Icon"
+            contentDescription = "Minus Icon",
+            tint = White
          )
       }
       Text(
          text = value.toString(),
-         color = White
       )
 
       IconButton(
@@ -47,7 +47,8 @@ fun ReminderIncrementor(
       ) {
          PainterIcon(
             iconId = R.drawable.ic_add,
-            contentDescription = "Plus Icon"
+            contentDescription = "Plus Icon",
+            tint = White
          )
       }
    }

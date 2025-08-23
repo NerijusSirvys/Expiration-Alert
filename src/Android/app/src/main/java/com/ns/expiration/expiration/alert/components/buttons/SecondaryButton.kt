@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import com.ns.expiration.expiration.alert.ui.theme.ExpirationAlertTheme
-import com.ns.expiration.expiration.alert.ui.theme.RedSalsa
 
 @Composable
 fun SecondaryButton(
@@ -23,10 +22,10 @@ fun SecondaryButton(
       modifier = modifier.fillMaxWidth(),
       shape = MaterialTheme.shapes.medium,
       border = ButtonDefaults.outlinedButtonBorder().copy(
-         brush = SolidColor(RedSalsa)
+         brush = SolidColor(MaterialTheme.colorScheme.error)
       ),
       colors = ButtonDefaults.outlinedButtonColors(
-         contentColor = RedSalsa
+         contentColor = MaterialTheme.colorScheme.error
       )
    ) {
       Text(text = text)

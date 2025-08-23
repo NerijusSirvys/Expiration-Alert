@@ -9,20 +9,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.ns.expiration.expiration.alert.ui.theme.White
 
 @Composable
 fun PainterIcon(
    modifier: Modifier = Modifier,
    @DrawableRes iconId: Int,
    contentDescription: String,
-   tint: Color = White.copy(alpha = 0.2f),
+   tint: Color = Color.Unspecified,
    size: Dp = 24.dp
 ) {
    Icon(
       modifier = modifier.size(size),
       painter = painterResource(iconId),
       contentDescription = contentDescription,
-      tint = tint,
+      tint = tint
    )
 }
