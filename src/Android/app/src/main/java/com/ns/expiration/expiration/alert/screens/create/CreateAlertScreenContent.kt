@@ -102,7 +102,11 @@ fun CreateAlertScreenContent(
                   }
                )
 
-               AlertScreenTabs.Picture -> PictureTabContent()
+               AlertScreenTabs.Picture -> PictureTabContent(
+                  image = state.image,
+                  onPhotoTaken = { onAction.invoke(CreateAlertScreenActions.TakePicture(it)) },
+                  onResetPhoto = { onAction.invoke(CreateAlertScreenActions.ResetPicture) },
+               )
             }
          }
       }

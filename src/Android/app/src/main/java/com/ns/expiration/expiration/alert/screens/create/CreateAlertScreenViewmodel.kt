@@ -2,6 +2,7 @@ package com.ns.expiration.expiration.alert.screens.create
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil3.Bitmap
 import com.ns.expiration.expiration.alert.repositories.AlertRepository
 import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
 import com.ns.expiration.expiration.alert.screens.create.data.Reminder
@@ -42,6 +43,20 @@ class CreateAlertScreenViewmodel(
          is CreateAlertScreenActions.UpdateNotes -> updateNotes(action.value)
          CreateAlertScreenActions.Save -> save()
          is CreateAlertScreenActions.CreateReminder -> createReminder(action.value, action.range)
+         is CreateAlertScreenActions.TakePicture -> takePicture(action.bitmap)
+         CreateAlertScreenActions.ResetPicture -> resetPhoto()
+      }
+   }
+
+   private fun resetPhoto() {
+      _state.update {
+         it.copy(image = null)
+      }
+   }
+
+   private fun takePicture(bitmap: Bitmap) {
+      _state.update {
+         it.copy(image = bitmap)
       }
    }
 
