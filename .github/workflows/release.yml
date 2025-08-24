@@ -20,16 +20,6 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    # - name: Set up Android SDK
-    #   uses: android-actions/setup-android@v3
-  
-    # - name: Install Android SDK bits
-    #   run: |
-    #     sdkmanager --install \
-    #       "platforms;android-34" \
-    #       "build-tools;34.0.0" \
-    #       "platform-tools"
-
     - name: Grant execute permission for gradlew
       working-directory: src/Android
       run: chmod +x gradlew
@@ -61,9 +51,14 @@ jobs:
       env:
           BUILD_TOOLS_VERSION: "34.0.0"
 
+    - name: Rename APK file 
+      run: mv src/Android/app/build/outputs/apk/release/app-release-unsigned-signed.apk src/Android/app/build/outputs/apk/release/app-release.apk
+
     - name: Print folder tree
       uses: jaywcjlove/github-action-folder-tree@v1.2.0
       with:
         path: ./src/Android/app/build/outputs
         depth: 10
+
+
 
