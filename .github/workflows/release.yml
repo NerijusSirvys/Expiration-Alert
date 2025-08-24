@@ -56,14 +56,13 @@ jobs:
         depth: 10
                 
     - name: Sign Release
-      uses: Tlaster/android-sign@v1.2.2
+      uses: r0adkll/sign-android-release@v1.0.4
       with:
-        releaseDirectory: |
-          src/Android/app/build/outputs/apk/release
-          src/Android/app/build/outputs/bundle/release
-        output: build/release/signed
+        releaseDirectory: src/Android/app/build/outputs/apk/release
         signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
         keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
         alias: ${{ secrets.KEY_ALIAS }}
         keyPassword: ${{ secrets.KEY_PASSWORD }}
+      env:
+          BUILD_TOOLS_VERSION: "34.0.0"
 
