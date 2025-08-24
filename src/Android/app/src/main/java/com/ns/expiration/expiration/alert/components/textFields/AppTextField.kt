@@ -1,4 +1,4 @@
-package com.ns.expiration.expiration.alert.components
+package com.ns.expiration.expiration.alert.components.textFields
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +17,7 @@ import com.ns.expiration.expiration.alert.ui.theme.OnPrimary
 @Composable
 fun AppTextField(
    modifier: Modifier = Modifier,
-   value: String,
+   state: TextFieldState,
    onValueChange: (String) -> Unit,
    enabled: Boolean = true,
    readOnly: Boolean = false,
@@ -29,7 +29,6 @@ fun AppTextField(
    prefix: @Composable (() -> Unit)? = null,
    suffix: @Composable (() -> Unit)? = null,
    supportingText: @Composable (() -> Unit)? = null,
-   isError: Boolean = false,
    visualTransformation: VisualTransformation = VisualTransformation.None,
    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
    keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -40,7 +39,7 @@ fun AppTextField(
 ) {
    OutlinedTextField(
       modifier = modifier.fillMaxWidth(),
-      value = value,
+      value = state.value,
       label = label,
       readOnly = readOnly,
       enabled = enabled,
@@ -49,7 +48,7 @@ fun AppTextField(
       prefix = prefix,
       suffix = suffix,
       supportingText = supportingText,
-      isError = isError,
+      isError = !state.isValid,
       visualTransformation = visualTransformation,
       keyboardOptions = keyboardOptions,
       keyboardActions = keyboardActions,

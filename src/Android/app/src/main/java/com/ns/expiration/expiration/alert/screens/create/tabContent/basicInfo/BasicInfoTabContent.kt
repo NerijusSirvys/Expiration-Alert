@@ -21,33 +21,33 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.ns.expiration.expiration.alert.R
-import com.ns.expiration.expiration.alert.components.AppTextField
 import com.ns.expiration.expiration.alert.components.DatePickerModal
 import com.ns.expiration.expiration.alert.components.PainterIcon
-import com.ns.expiration.expiration.alert.utilities.DateTimeHelpers
+import com.ns.expiration.expiration.alert.components.textFields.AppTextField
+import com.ns.expiration.expiration.alert.components.textFields.TextFieldState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicInfoTabContent(
    modifier: Modifier = Modifier,
-   name: String,
-   notes: String,
-   quantity: String,
-   expirationDate: Long?,
+   name: TextFieldState,
+   notes: TextFieldState,
+   quantity: TextFieldState,
+   expirationDate: TextFieldState,
    onNameChange: (String) -> Unit,
    onNotesChange: (String) -> Unit,
    onQuantityChange: (String) -> Unit,
-   onExpirationSet: (Long) -> Unit,
+   onExpirationSet: (String) -> Unit,
 ) {
    Column {
       AppTextField(
-         value = name,
+         state = name,
          onValueChange = { onNameChange.invoke(it) },
          label = { Text(text = "Name") }
       )
 
       AppTextField(
-         value = quantity.toString(),
+         state = quantity,
          onValueChange = { onQuantityChange.invoke(it) },
          label = { Text(text = "Quantity") },
          keyboardOptions = KeyboardOptions(
@@ -56,7 +56,7 @@ fun BasicInfoTabContent(
       )
 
       AppTextField(
-         value = notes,
+         state = notes,
          onValueChange = { onNotesChange.invoke(it) },
          label = { Text(text = "Notes") },
          minLines = 4,
@@ -72,8 +72,9 @@ fun BasicInfoTabContent(
 
       var showModal by remember { mutableStateOf(false) }
 
+      // expirationDate?.let { DateTimeHelpers.convertMillisToDate(it) } ?: ""
       AppTextField(
-         value = expirationDate?.let { DateTimeHelpers.convertMillisToDate(it) } ?: "",
+         state = expirationDate,
          onValueChange = { },
          label = { Text("Date") },
          placeholder = { Text("MM/DD/YYYY") },
@@ -100,7 +101,7 @@ fun BasicInfoTabContent(
          DatePickerModal(
             onDateSelected = {
                it?.let {
-                  onExpirationSet.invoke(it)
+                  onExpirationSet.invoke(it.toString())
                }
             },
             onDismiss = { showModal = false }

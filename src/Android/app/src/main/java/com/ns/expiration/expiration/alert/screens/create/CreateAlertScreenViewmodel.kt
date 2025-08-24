@@ -5,9 +5,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.Bitmap
+import com.ns.expiration.expiration.alert.components.textFields.TextFieldState
 import com.ns.expiration.expiration.alert.repositories.AlertRepository
 import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
 import com.ns.expiration.expiration.alert.screens.create.data.Reminder
+import com.ns.expiration.expiration.alert.utilities.DateTimeHelpers
 import com.ns.expiration.expiration.alert.utilities.toWebPStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -71,41 +73,55 @@ class CreateAlertScreenViewmodel(
    }
 
    private fun save() {
-      try {
-         val id = UUID.randomUUID().toString()
-         val nowInMilliseconds = System.currentTimeMillis()
-
-         val imageFileName = "${_state.value.name}_${nowInMilliseconds}_${id}"
-         val stream = _state.value.image?.toWebPStream()
-         val file = File(context.filesDir, imageFileName)
-         file.outputStream().use { it.write(stream) }
-
-         viewModelScope.launch(Dispatchers.IO) {
-            repository.saveAlert(id, file.absolutePath, nowInMilliseconds, _state.value)
-            _channel.send(CreateAlertScreenEvents.AlertSavedSuccess)
-         }
-      } catch (e: Exception) {
-         Log.e(CreateAlertScreenViewmodel::class.qualifiedName, "Failed to save the alert", e)
+      val state = _state.value
+      if (!state.name.isValid || !state.quantity.isValid || !state.notes.isValid || !state.expirationDate.isValid) {
          viewModelScope.launch {
-            _channel.send(CreateAlertScreenEvents.AlertSaveFailed)
+            _channel.send(CreateAlertScreenEvents.MissingInformation)
+         }
+      } else {
+         try {
+            val id = UUID.randomUUID().toString()
+            val nowInMilliseconds = System.currentTimeMillis()
+
+            val imageFileName = "${_state.value.name}_${nowInMilliseconds}_${id}"
+            val stream = _state.value.image?.toWebPStream()
+
+            val path = stream?.let { bytes ->
+               val file = File(context.filesDir, imageFileName)
+               file.outputStream().use { it.write(bytes) }
+               file.absolutePath
+            } ?: ""
+
+            viewModelScope.launch(Dispatchers.IO) {
+               repository.saveAlert(id, path, nowInMilliseconds, _state.value)
+               _channel.send(CreateAlertScreenEvents.AlertSavedSuccess)
+            }
+         } catch (e: Exception) {
+            Log.e(CreateAlertScreenViewmodel::class.qualifiedName, "Failed to save the alert", e)
+            viewModelScope.launch {
+               _channel.send(CreateAlertScreenEvents.AlertSaveFailed)
+            }
          }
       }
    }
 
-   private fun setExpirationDate(value: Long) {
-      _state.update { it.copy(expirationDate = value) }
+   private fun setExpirationDate(value: String) {
+      val dateAsText = DateTimeHelpers.convertMillisToDate(value.toLong())
+      _state.update { it.copy(expirationDate = TextFieldState(dateAsText, true)) }
    }
 
    private fun updateNotes(value: String) {
-      _state.update { it.copy(notes = value) }
+      _state.update { it.copy(notes = TextFieldState(value, true)) }
    }
 
    private fun updateName(value: String) {
-      _state.update { it.copy(name = value) }
+      val isValid = !value.isEmpty()
+      _state.update { it.copy(name = TextFieldState(value, isValid)) }
    }
 
    private fun updateQuantity(value: String) {
-      _state.update { it.copy(quantity = value) }
+      val isValid = value.toIntOrNull() != null
+      _state.update { it.copy(quantity = TextFieldState(value, isValid)) }
    }
 
    private fun resetPhoto() {

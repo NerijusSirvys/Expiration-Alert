@@ -12,7 +12,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AlertRepository(
@@ -60,9 +62,8 @@ class AlertRepository(
 
    suspend fun saveAlert(id: String, imageUrl: String, timestamp: Long, request: CreateNewAlertScreenState): String {
 
-      val expirationDate = Instant.ofEpochMilli(request.expirationDate!!)
-         .atZone(ZoneId.systemDefault())
-         .toLocalDate()
+      val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+      val expirationDate = LocalDate.parse(request.expirationDate.value, formatter)
 
       val createdOn = Instant.ofEpochMilli(timestamp)
          .atZone(ZoneId.systemDefault())
@@ -70,9 +71,9 @@ class AlertRepository(
 
       val alert = AlertEntity(
          id = id,
-         name = request.name,
-         quantity = request.quantity.toInt(),
-         notes = request.notes,
+         name = request.name.value,
+         quantity = request.quantity.value.toInt(),
+         notes = request.notes.value,
          imageUrl = imageUrl,
          expirationDate = expirationDate,
          createdOn = createdOn,

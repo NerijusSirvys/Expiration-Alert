@@ -2,6 +2,7 @@ package com.ns.expiration.expiration.alert.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ns.expiration.expiration.alert.components.textFields.TextFieldState
 import com.ns.expiration.expiration.alert.repositories.AlertRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,7 +19,7 @@ class HomeScreenViewmodel(
 
    val state = combine(_data, _state) { data, state ->
       state.copy(
-         alerts = data.filter { it.name.contains(state.searchTerm) }
+         alerts = data.filter { it.name.contains(state.searchTerm.value) }
       )
    }.stateIn(
       scope = viewModelScope,
@@ -34,7 +35,7 @@ class HomeScreenViewmodel(
 
    private fun updateSearchTerm(term: String) {
       _state.update {
-         it.copy(searchTerm = term)
+         it.copy(searchTerm = TextFieldState(term, true))
       }
    }
 }

@@ -7,7 +7,7 @@ sealed interface CreateAlertScreenActions {
    data class UpdateName(val value: String) : CreateAlertScreenActions
    data class UpdateNotes(val value: String) : CreateAlertScreenActions
    data class UpdateQuantity(val value: String) : CreateAlertScreenActions
-   data class SetExpirationDate(val value: Long) : CreateAlertScreenActions
+   data class SetExpirationDate(val value: String) : CreateAlertScreenActions
    data object Save : CreateAlertScreenActions
    data class CreateReminder(val value: Int, val range: ReminderRange) : CreateAlertScreenActions
    data class TakePicture(val bitmap: Bitmap) : CreateAlertScreenActions

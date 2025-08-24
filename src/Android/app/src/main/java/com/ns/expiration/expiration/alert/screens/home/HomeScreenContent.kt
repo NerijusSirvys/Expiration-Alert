@@ -17,9 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ns.expiration.expiration.alert.R
-import com.ns.expiration.expiration.alert.components.AppTextField
 import com.ns.expiration.expiration.alert.components.PainterIcon
 import com.ns.expiration.expiration.alert.components.buttons.FloatingActionButton
+import com.ns.expiration.expiration.alert.components.textFields.AppTextField
 import com.ns.expiration.expiration.alert.screens.home.components.alert.AlertCard
 
 @Composable
@@ -45,7 +45,7 @@ fun HomeScreenContent(
          verticalArrangement = Arrangement.Top
       ) {
          AppTextField(
-            value = state.searchTerm,
+            state = state.searchTerm,
             onValueChange = { onAction.invoke(HomeScreenAction.UpdateSearchTerm(it)) },
             placeholder = { Text(text = "Search") },
             leadingIcon = {
