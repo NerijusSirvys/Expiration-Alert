@@ -52,7 +52,9 @@ jobs:
           BUILD_TOOLS_VERSION: "34.0.0"
 
     - name: Rename APK file 
-      run: mv src/Android/app/build/outputs/apk/release/app-release-unsigned-signed.apk src/Android/app/build/outputs/apk/release/app-release.apk
+      run: | 
+        mv src/Android/app/build/outputs/apk/release/app-release-unsigned-signed.apk \
+        src/Android/app/build/outputs/apk/release/expiration-alert-${{ github.ref_name }}.apk
 
     - name: Print folder tree
       uses: jaywcjlove/github-action-folder-tree@v1.2.0
