@@ -1,8 +1,10 @@
 name: Release APK
 
+
 on:
-  pull_request:
-    branches: [ "main" ]
+  push:
+    tags: ['v*']
+    branches: ['main']
 
 jobs:
   build:
@@ -17,16 +19,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: gradle
-
-    - name: Set up Android SDK
-      uses: android-actions/setup-android@v3
-  
-    - name: Install Android SDK bits
-      run: |
-        sdkmanager --install \
-          "platforms;android-34" \
-          "build-tools;34.0.0" \
-          "platform-tools"
 
     - name: Grant execute permission for gradlew
       working-directory: src/Android
@@ -46,20 +38,37 @@ jobs:
     - name: Assemble release
       working-directory: src/Android
       run: ./gradlew assembleRelease
+                
+    - name: Sign Release
+      uses: r0adkll/sign-android-release@v1.0.4
+      id: sign_app
+      with:
+        releaseDirectory: src/Android/app/build/outputs/apk/release
+        signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
+        keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+        alias: ${{ secrets.KEY_ALIAS }}
+        keyPassword: ${{ secrets.KEY_PASSWORD }}
+      env:
+          BUILD_TOOLS_VERSION: "34.0.0"
+
+    - name: Rename APK file 
+      run: | 
+        mv src/Android/app/build/outputs/apk/release/app-release-unsigned-signed.apk \
+        src/Android/app/build/outputs/apk/release/expiration-alert-${{ github.run_number }}.apk
 
     - name: Print folder tree
       uses: jaywcjlove/github-action-folder-tree@v1.2.0
       with:
         path: ./src/Android/app/build/outputs
         depth: 10
-            
-    - name: Sign Release
-      uses: r0adkll/sign-android-release@v1.0.4
+
+    - name: Uploading Artifact  
+      uses: actions/upload-artifact@v4
       with:
-        releaseFile: src/Android/app/build/outputs/apk/release/app-release-unsigned.apk
-        signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
-        keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-        alias: ${{ secrets.KEY_ALIAS }}
-        keyPassword: ${{ secrets.KEY_PASSWORD 
-        buildToolsVersion: '34.0.0'
+        name: expiration-alert-${{ github.run_number }}
+        path: src/Android/app/build/outputs/apk/release/expiration-alert-${{ github.run_number }}.apk
+        if-no-files-found: error
+        
+
+
 
