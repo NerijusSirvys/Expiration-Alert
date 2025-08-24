@@ -61,5 +61,11 @@ jobs:
         path: ./src/Android/app/build/outputs
         depth: 10
 
+    - name: Uploading Artifact  
+      uses: actions/upload-artifact@v2
+      with:
+        name: Signed app bundle
+        path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
 
 
