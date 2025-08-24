@@ -60,12 +60,11 @@ class AlertRepository(
       alertDao.deleteAlertWithReminders(id)
    }
 
-   suspend fun saveAlert(id: String, imageUrl: String, timestamp: Long, request: CreateNewAlertScreenState): String {
-
+   suspend fun saveAlert(id: String, imageUrl: String, request: CreateNewAlertScreenState): String {
       val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
       val expirationDate = LocalDate.parse(request.expirationDate.value, formatter)
 
-      val createdOn = Instant.ofEpochMilli(timestamp)
+      val createdOn = Instant.ofEpochMilli(System.currentTimeMillis())
          .atZone(ZoneId.systemDefault())
          .toLocalDateTime()
 

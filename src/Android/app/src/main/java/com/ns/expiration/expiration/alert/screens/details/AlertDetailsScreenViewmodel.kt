@@ -1,5 +1,6 @@
 package com.ns.expiration.expiration.alert.screens.details
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,7 +16,8 @@ import kotlinx.coroutines.launch
 
 class AlertDetailsScreenViewmodel(
    val id: String,
-   val alertRepository: AlertRepository
+   val alertRepository: AlertRepository,
+   val context: Context
 ) : ViewModel() {
 
    private val _state = MutableStateFlow(AlertDetailsScreenState())
@@ -29,6 +31,7 @@ class AlertDetailsScreenViewmodel(
    )
 
    init {
+      val test = context.cacheDir.listFiles()
       viewModelScope.launch {
          alertRepository.getAlertById(id).collect { details ->
             _state.update {
@@ -48,6 +51,7 @@ class AlertDetailsScreenViewmodel(
       viewModelScope.launch(Dispatchers.IO) {
          try {
             alertRepository.deleteAlert(id)
+            context.deleteFile("${_state.value.data.name}_${id}.webp")
             _channel.send(AlertDetailScreenEvents.AlertDelete(AlertActionResult.Success))
          } catch (e: Exception) {
             Log.e(AlertDetailsScreenViewmodel::class.qualifiedName, "Failed to delete alert", e)

@@ -14,8 +14,9 @@ import com.ns.expiration.expiration.alert.utilities.toWebPStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.internal.toImmutableList
@@ -33,7 +34,11 @@ class CreateAlertScreenViewmodel(
    val messageChannel = _channel.receiveAsFlow()
 
    private val _state = MutableStateFlow(CreateNewAlertScreenState())
-   val state = _state.asStateFlow()
+   val state = _state.stateIn(
+      scope = viewModelScope,
+      started = SharingStarted.WhileSubscribed(5000),
+      initialValue = CreateNewAlertScreenState()
+   )
 
    fun onAction(action: CreateAlertScreenActions) {
       when (action) {
@@ -81,9 +86,8 @@ class CreateAlertScreenViewmodel(
       } else {
          try {
             val id = UUID.randomUUID().toString()
-            val nowInMilliseconds = System.currentTimeMillis()
 
-            val imageFileName = "${_state.value.name}_${nowInMilliseconds}_${id}"
+            val imageFileName = "${_state.value.name.value}_${id}.webp"
             val stream = _state.value.image?.toWebPStream()
 
             val path = stream?.let { bytes ->
@@ -93,7 +97,7 @@ class CreateAlertScreenViewmodel(
             } ?: ""
 
             viewModelScope.launch(Dispatchers.IO) {
-               repository.saveAlert(id, path, nowInMilliseconds, _state.value)
+               repository.saveAlert(id, path, _state.value)
                _channel.send(CreateAlertScreenEvents.AlertSavedSuccess)
             }
          } catch (e: Exception) {
