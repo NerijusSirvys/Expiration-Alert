@@ -9,17 +9,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ns.expiration.expiration.alert.R
-import com.ns.expiration.expiration.alert.screens.home.components.FloatingActionButton
+import com.ns.expiration.expiration.alert.components.PainterIcon
+import com.ns.expiration.expiration.alert.components.buttons.FloatingActionButton
+import com.ns.expiration.expiration.alert.components.textFields.AppTextField
 import com.ns.expiration.expiration.alert.screens.home.components.alert.AlertCard
-import com.ns.expiration.expiration.alert.screens.home.components.textField.SlimTextField
-import com.ns.expiration.expiration.alert.screens.home.components.textField.TextFieldIcon
 
 @Composable
 fun HomeScreenContent(
@@ -30,6 +31,7 @@ fun HomeScreenContent(
    onNavigateToDetails: (String) -> Unit
 ) {
    Scaffold(
+      containerColor = MaterialTheme.colorScheme.background,
       contentWindowInsets = WindowInsets(0.dp),
       floatingActionButton = {
          FloatingActionButton(
@@ -42,11 +44,17 @@ fun HomeScreenContent(
          modifier = modifier.padding(innerPadding),
          verticalArrangement = Arrangement.Top
       ) {
-         SlimTextField(
-            value = state.searchTerm,
+         AppTextField(
+            state = state.searchTerm,
             onValueChange = { onAction.invoke(HomeScreenAction.UpdateSearchTerm(it)) },
-            leadingIcon = TextFieldIcon(painterResource(R.drawable.ic_search), "Search Field Icon"),
-            placeholder = "Search"
+            placeholder = { Text(text = "Search") },
+            leadingIcon = {
+               PainterIcon(
+                  iconId = R.drawable.ic_search,
+                  contentDescription = "Search Field Icon",
+                  tint = MaterialTheme.colorScheme.onPrimary
+               )
+            }
          )
 
          Spacer(modifier = Modifier.height(25.dp))

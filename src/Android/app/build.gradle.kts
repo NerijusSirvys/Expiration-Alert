@@ -43,6 +43,13 @@ android {
 }
 
 dependencies {
+   //Camerax
+   implementation(libs.camerax.core)
+   implementation(libs.camerax.lifecycle)
+   implementation(libs.camerax.view)
+   implementation(libs.camerax.camera2)
+   implementation(libs.camerax.extensions)
+
    // Image Loading
    implementation(libs.coil.compose)
    implementation(libs.coil.network)

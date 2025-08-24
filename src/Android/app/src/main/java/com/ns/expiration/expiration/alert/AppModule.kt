@@ -1,6 +1,7 @@
 package com.ns.expiration.expiration.alert
 
 import com.ns.expiration.expiration.alert.repositories.AlertRepository
+import com.ns.expiration.expiration.alert.screens.create.CreateAlertScreenViewmodel
 import com.ns.expiration.expiration.alert.screens.details.AlertDetailsScreenViewmodel
 import com.ns.expiration.expiration.alert.screens.home.HomeScreenViewmodel
 import org.koin.core.module.dsl.factoryOf
@@ -12,4 +13,5 @@ val appModule = module {
 
    viewModelOf(::HomeScreenViewmodel)
    viewModelOf(::AlertDetailsScreenViewmodel)
+   viewModelOf(::CreateAlertScreenViewmodel)
 }
