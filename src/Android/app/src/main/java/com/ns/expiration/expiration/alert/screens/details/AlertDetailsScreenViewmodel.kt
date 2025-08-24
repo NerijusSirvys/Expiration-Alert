@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.ns.expiration.expiration.alert.repositories.AlertRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -31,7 +32,7 @@ class AlertDetailsScreenViewmodel(
    )
 
    init {
-      viewModelScope.launch {
+      viewModelScope.launch(Dispatchers.IO) {
          alertRepository.getAlertById(id).collect { details ->
             _state.update {
                it.copy(isLoading = false, data = details)
@@ -47,14 +48,20 @@ class AlertDetailsScreenViewmodel(
    }
 
    private fun deleteAlert() {
-      viewModelScope.launch(Dispatchers.IO) {
+      viewModelScope.launch {
+         _state.update { it.copy(isLoading = true) }
          try {
             alertRepository.deleteAlert(id)
             context.deleteFile("${_state.value.data.name}_${id}.webp")
-            _channel.send(AlertDetailScreenEvents.AlertDelete(AlertActionResult.Success))
+
+            // make loading look better
+            delay(1000)
+            _state.update { it.copy(isLoading = true) }
+
+            _channel.send(AlertDetailScreenEvents.AlertDeleteSuccess)
          } catch (e: Exception) {
             Log.e(AlertDetailsScreenViewmodel::class.qualifiedName, "Failed to delete alert", e)
-            _channel.send(AlertDetailScreenEvents.AlertDelete(AlertActionResult.Failed))
+            _channel.send(AlertDetailScreenEvents.AlertDeleteFailed)
          }
       }
    }

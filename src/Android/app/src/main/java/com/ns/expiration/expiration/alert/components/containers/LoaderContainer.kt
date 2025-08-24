@@ -1,5 +1,8 @@
 package com.ns.expiration.expiration.alert.components.containers
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,7 +19,11 @@ fun LoaderContainer(
       modifier = modifier,
       contentAlignment = Alignment.TopCenter
    ) {
-      if (isLoading) {
+      AnimatedVisibility(
+         visible = isLoading,
+         enter = fadeIn(),
+         exit = fadeOut()
+      ) {
          LoadingAlert()
       }
       content.invoke()
