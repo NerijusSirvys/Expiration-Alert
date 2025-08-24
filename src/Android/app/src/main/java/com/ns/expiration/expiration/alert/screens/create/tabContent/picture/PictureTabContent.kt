@@ -121,6 +121,7 @@ private fun takePhoto(controller: LifecycleCameraController, context: Context, o
             val original = image.toBitmap()
             val matrix = Matrix().apply { postRotate(image.imageInfo.rotationDegrees.toFloat()) }
             val rotated = Bitmap.createBitmap(original, 0, 0, original.width, original.height, matrix, true)
+
             onPhotoTaken(rotated)
          }
 

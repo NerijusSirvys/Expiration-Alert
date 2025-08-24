@@ -24,7 +24,20 @@ fun CreateAlertScreen(
 
    ObserveAsEvents(vm.messageChannel) {
       scope.launch {
-         snackbarHostState.showSnackbar(it)
+         when (it) {
+            CreateAlertScreenEvents.AlertSaveFailed -> {
+               snackbarHostState.showSnackbar("Failed to create alert")
+            }
+
+            CreateAlertScreenEvents.AlertSavedSuccess -> {
+               navHostController.navigateUp()
+               snackbarHostState.showSnackbar("Alert created")
+            }
+
+            CreateAlertScreenEvents.ReminderDuplicateFound -> {
+               snackbarHostState.showSnackbar("Reminder already exist")
+            }
+         }
       }
    }
 

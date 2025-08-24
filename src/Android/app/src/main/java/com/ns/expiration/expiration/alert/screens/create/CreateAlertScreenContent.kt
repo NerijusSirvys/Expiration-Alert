@@ -89,10 +89,12 @@ fun CreateAlertScreenContent(
                AlertScreenTabs.BasicInfo -> BasicInfoTabContent(
                   name = state.name,
                   notes = state.notes,
+                  quantity = state.quantity,
                   expirationDate = state.expirationDate,
                   onNameChange = { onAction.invoke(CreateAlertScreenActions.UpdateName(it)) },
                   onNotesChange = { onAction.invoke(CreateAlertScreenActions.UpdateNotes(it)) },
-                  onExpirationSet = { onAction.invoke(CreateAlertScreenActions.SetExpirationDate(it)) }
+                  onExpirationSet = { onAction.invoke(CreateAlertScreenActions.SetExpirationDate(it)) },
+                  onQuantityChange = { onAction.invoke(CreateAlertScreenActions.UpdateQuantity(it)) }
                )
 
                AlertScreenTabs.Reminders -> RemindersTabContent(

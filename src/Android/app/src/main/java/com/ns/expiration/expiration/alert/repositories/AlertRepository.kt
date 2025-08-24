@@ -1,12 +1,18 @@
 package com.ns.expiration.expiration.alert.repositories
 
 import com.ns.expiration.expiration.alert.persistance.dao.AlertDao
+import com.ns.expiration.expiration.alert.persistance.entities.AlertEntity
+import com.ns.expiration.expiration.alert.persistance.entities.AlertWithReminders
+import com.ns.expiration.expiration.alert.persistance.entities.ReminderEntity
 import com.ns.expiration.expiration.alert.repositories.data.AlertDetails
 import com.ns.expiration.expiration.alert.repositories.data.AlertOverview
+import com.ns.expiration.expiration.alert.screens.create.CreateNewAlertScreenState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
+import java.time.Instant
+import java.time.ZoneId
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AlertRepository(
@@ -50,5 +56,43 @@ class AlertRepository(
          throw IllegalArgumentException("Id cannot be empty")
 
       alertDao.deleteAlertWithReminders(id)
+   }
+
+   suspend fun saveAlert(id: String, imageUrl: String, timestamp: Long, request: CreateNewAlertScreenState): String {
+
+      val expirationDate = Instant.ofEpochMilli(request.expirationDate!!)
+         .atZone(ZoneId.systemDefault())
+         .toLocalDate()
+
+      val createdOn = Instant.ofEpochMilli(timestamp)
+         .atZone(ZoneId.systemDefault())
+         .toLocalDateTime()
+
+      val alert = AlertEntity(
+         id = id,
+         name = request.name,
+         quantity = request.quantity.toInt(),
+         notes = request.notes,
+         imageUrl = imageUrl,
+         expirationDate = expirationDate,
+         createdOn = createdOn,
+      )
+
+      val reminders = mutableListOf<ReminderEntity>()
+      request.reminders.forEach {
+         reminders.add(
+            ReminderEntity(
+               id = it.id,
+               alertId = alert.id,
+               range = it.range,
+               value = it.value,
+               createdOn = createdOn,
+            )
+         )
+      }
+
+      alertDao.insertAlertWithReminders(AlertWithReminders(alert, reminders))
+
+      return alert.id;
    }
 }

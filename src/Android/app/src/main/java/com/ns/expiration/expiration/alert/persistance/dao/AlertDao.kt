@@ -42,6 +42,14 @@ interface AlertDao {
    suspend fun updateAlert(alertEntity: AlertEntity)
 
    @Transaction
+   suspend fun insertAlertWithReminders(data: AlertWithReminders) {
+      insertAlert(data.alert)
+      data.reminders.forEach {
+         insertReminder(it)
+      }
+   }
+
+   @Transaction
    suspend fun deleteAlertWithReminders(alertId: String) {
       val alert = getAlertWithReminders(alertId)
 
