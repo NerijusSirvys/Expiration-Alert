@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.toRoute
+import com.ns.expiration.expiration.alert.components.containers.LoaderContainer
 import com.ns.expiration.expiration.alert.navigation.Destinations
 import com.ns.expiration.expiration.alert.utilities.ObserveAsEvents
 import kotlinx.coroutines.launch
@@ -28,35 +29,24 @@ fun AlertDetailsScreen(
    ObserveAsEvents(vm.eventChannel) {
       scope.launch {
          when (it) {
-            is AlertDetailScreenEvents.AlertComplete -> when (it.result) {
-               AlertActionResult.Success -> {
-                  navController.navigateUp()
-                  snackbarHostState.showSnackbar(message = "Alert Completed")
-               }
-
-               AlertActionResult.Failed -> {
-                  snackbarHostState.showSnackbar(message = "Operation Failed")
-               }
+            AlertDetailScreenEvents.AlertDeleteFailed -> {
+               snackbarHostState.showSnackbar(message = "Operation Failed")
             }
 
-            is AlertDetailScreenEvents.AlertDelete -> when (it.result) {
-               AlertActionResult.Success -> {
-                  navController.navigateUp()
-                  snackbarHostState.showSnackbar(message = "Alert Deleted")
-               }
-
-               AlertActionResult.Failed -> {
-                  snackbarHostState.showSnackbar(message = "Operation Failed")
-               }
+            AlertDetailScreenEvents.AlertDeleteSuccess -> {
+               navController.navigateUp()
+               snackbarHostState.showSnackbar(message = "Alert Deleted")
             }
          }
       }
    }
 
-   AlertDetailsScreenContent(
-      modifier = modifier,
-      state = state,
-      onAction = vm::onAction,
-      onNavigateBack = { navController.navigateUp() },
-   )
+   LoaderContainer(isLoading = state.isLoading) {
+      AlertDetailsScreenContent(
+         modifier = modifier,
+         state = state,
+         onAction = vm::onAction,
+         onNavigateBack = { navController.navigateUp() },
+      )
+   }
 }

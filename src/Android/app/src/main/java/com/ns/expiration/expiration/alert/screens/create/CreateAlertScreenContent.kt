@@ -99,6 +99,7 @@ fun CreateAlertScreenContent(
 
                AlertScreenTabs.Reminders -> RemindersTabContent(
                   reminders = state.reminders,
+                  onReminderRemove = { onAction.invoke(CreateAlertScreenActions.DeleteReminder(it)) },
                   onReminderCreate = { value, range ->
                      onAction.invoke(CreateAlertScreenActions.CreateReminder(value, range))
                   }

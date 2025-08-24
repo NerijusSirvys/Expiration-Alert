@@ -7,10 +7,12 @@ import com.ns.expiration.expiration.alert.persistance.entities.ReminderEntity
 import com.ns.expiration.expiration.alert.repositories.data.AlertDetails
 import com.ns.expiration.expiration.alert.repositories.data.AlertOverview
 import com.ns.expiration.expiration.alert.screens.create.CreateNewAlertScreenState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -36,36 +38,37 @@ class AlertRepository(
    }
 
    suspend fun getAlertById(id: String): Flow<AlertDetails> {
-      val data = alertDao.getAlertWithReminders(id).let { alert ->
-         AlertDetails(
-            id = alert.alert.id,
-            name = alert.alert.name,
-            quantity = alert.alert.quantity,
-            notes = alert.alert.notes,
-            expirationDate = alert.alert.expirationDate.toString(),
-            reminders = alert.reminders.map {
-               "${it.value} ${it.range} until expiration"
-            },
-            imageUrl = alert.alert.imageUrl,
-         )
+      val data = withContext(Dispatchers.IO) {
+         alertDao.getAlertWithReminders(id).let { alert ->
+            AlertDetails(
+               id = alert.alert.id,
+               name = alert.alert.name,
+               quantity = alert.alert.quantity,
+               notes = alert.alert.notes,
+               expirationDate = alert.alert.expirationDate.toString(),
+               reminders = alert.reminders.map {
+                  "${it.value} ${it.range} until expiration"
+               },
+               imageUrl = alert.alert.imageUrl,
+            )
+         }
       }
 
       return flow { emit(data) }
    }
 
-   suspend fun deleteAlert(id: String) {
+   suspend fun deleteAlert(id: String) = withContext(Dispatchers.IO) {
       if (id.isEmpty())
          throw IllegalArgumentException("Id cannot be empty")
 
       alertDao.deleteAlertWithReminders(id)
    }
 
-   suspend fun saveAlert(id: String, imageUrl: String, timestamp: Long, request: CreateNewAlertScreenState): String {
-
+   suspend fun saveAlert(id: String, imageUrl: String, request: CreateNewAlertScreenState) = withContext(Dispatchers.IO) {
       val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
       val expirationDate = LocalDate.parse(request.expirationDate.value, formatter)
 
-      val createdOn = Instant.ofEpochMilli(timestamp)
+      val createdOn = Instant.ofEpochMilli(System.currentTimeMillis())
          .atZone(ZoneId.systemDefault())
          .toLocalDateTime()
 
@@ -93,7 +96,5 @@ class AlertRepository(
       }
 
       alertDao.insertAlertWithReminders(AlertWithReminders(alert, reminders))
-
-      return alert.id;
    }
 }

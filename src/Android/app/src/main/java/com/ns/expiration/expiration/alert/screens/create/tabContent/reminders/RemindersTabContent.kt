@@ -1,6 +1,5 @@
 package com.ns.expiration.expiration.alert.screens.create.tabContent.reminders
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,11 +24,11 @@ import com.ns.expiration.expiration.alert.ui.theme.ExpirationAlertTheme
 import com.ns.expiration.expiration.alert.utilities.maxHeight
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnrememberedMutableState")
 @Composable
 fun RemindersTabContent(
    modifier: Modifier = Modifier,
    onReminderCreate: (Int, ReminderRange) -> Unit,
+   onReminderRemove: (String) -> Unit,
    reminders: List<Reminder>
 ) {
    var showReminderDialog by remember { mutableStateOf(false) }
@@ -40,7 +39,8 @@ fun RemindersTabContent(
    ) {
       RemindersLazyList(
          modifier = Modifier.maxHeight(0.75f),
-         reminders = reminders
+         reminders = reminders,
+         onItemDeleted = { onReminderRemove.invoke(it) }
       )
 
       HorizontalDivider()
@@ -73,6 +73,7 @@ private fun Preview() {
       ) {
          RemindersTabContent(
             onReminderCreate = { _, _ -> },
+            onReminderRemove = {},
             reminders = listOf(
                Reminder(
                   id = "1",

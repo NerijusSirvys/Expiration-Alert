@@ -62,7 +62,7 @@ fun AlertCard(
             contentDescription = "Card Image",
             loading = { CardImageLoader(color = options.loaderColor) },
             error = {
-               CardImageError(text = "Not Found")
+               CardImageError(text = "No Image")
             }
          )
 
