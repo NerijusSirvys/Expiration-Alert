@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,12 +18,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import com.ns.expiration.expiration.alert.R
+import com.ns.expiration.expiration.alert.components.CenteredMessage
 import com.ns.expiration.expiration.alert.components.TopBar
 import com.ns.expiration.expiration.alert.components.buttons.SecondaryButton
 import com.ns.expiration.expiration.alert.screens.details.components.InformationCard
-import com.ns.expiration.expiration.alert.screens.home.components.alert.CardImageError
 import com.ns.expiration.expiration.alert.screens.home.components.alert.CardImageLoader
-import com.ns.expiration.expiration.alert.ui.theme.SunRay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,19 +71,27 @@ fun AlertDetailsScreenContent(
          }
 
          InformationCard(modifier = modifier, label = "Notes") {
-            Text(
-               text = state.data.notes,
-               overflow = TextOverflow.Ellipsis
-            )
+            if (state.data.notes.isEmpty()) {
+               CenteredMessage(text = "Not Found")
+            } else {
+               Text(
+                  text = state.data.notes,
+                  overflow = TextOverflow.Ellipsis
+               )
+            }
          }
 
          InformationCard(modifier = modifier, label = "Reminders") {
-            state.data.reminders.let {
-               it.forEachIndexed { index, item ->
-                  Text(
-                     text = item,
-                     overflow = TextOverflow.Ellipsis
-                  )
+            if (state.data.reminders.isEmpty()) {
+               CenteredMessage(text = "Not Found")
+            } else {
+               state.data.reminders.let {
+                  it.forEachIndexed { index, item ->
+                     Text(
+                        text = item,
+                        overflow = TextOverflow.Ellipsis
+                     )
+                  }
                }
             }
          }
@@ -95,9 +103,9 @@ fun AlertDetailsScreenContent(
                clipToBounds = true,
                contentScale = ContentScale.FillWidth,
                contentDescription = "Card Image",
-               loading = { CardImageLoader(color = SunRay) },
+               loading = { CardImageLoader(color = MaterialTheme.colorScheme.primary) },
                error = {
-                  CardImageError(text = "Not Found")
+                  CenteredMessage(text = "Not Found")
                }
             )
          }
