@@ -53,7 +53,7 @@ jobs:
     - name: Rename APK file 
       run: | 
         mv src/Android/app/build/outputs/apk/release/app-release-unsigned-signed.apk \
-        src/Android/app/build/outputs/apk/release/expiration-alert.apk
+        src/Android/app/build/outputs/apk/release/expiration-alert-${{ github.run_number }}.apk
 
     - name: Print folder tree
       uses: jaywcjlove/github-action-folder-tree@v1.2.0
