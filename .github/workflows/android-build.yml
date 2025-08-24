@@ -27,5 +27,6 @@ jobs:
       run: chmod +x gradlew
  
     - name: Build with Gradle
-      run: ./src/gradlew build
+      working-directory: src/Android
+      run: ./gradlew build
 
