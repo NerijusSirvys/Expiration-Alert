@@ -68,14 +68,9 @@ jobs:
         path: src/Android/app/build/outputs/apk/release/expiration-alert-${{ github.run_number }}.apk
         if-no-files-found: error
 
-    - name: Create/Update GitHub Release and upload assets
+    - name: Create Release and upload assets
       uses: softprops/action-gh-release@v2
       with:
         files: src/Android/app/build/outputs/apk/release/expiration-alert-${{ github.run_number }}.apk
-        draft: false
-        prerelease: false        
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-
