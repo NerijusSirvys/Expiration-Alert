@@ -60,6 +60,6 @@ jobs:
         signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
         keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
         alias: ${{ secrets.KEY_ALIAS }}
-        keyPassword: ${{ secrets.KEY_PASSWORD 
+        keyPassword: ${{ secrets.KEY_PASSWORD }}
         buildToolsVersion: '34.0.0'
 
