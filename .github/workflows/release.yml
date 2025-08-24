@@ -35,7 +35,7 @@ jobs:
 
     - name: Assemble release bundle
       working-directory: src/Android
-      run: ./gradlew bundleRelease
+      run: ./gradlew assembleRelease
 
     - name: Sign Release
       uses: r0adkll/sign-android-release@v1
