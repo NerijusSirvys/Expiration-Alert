@@ -17,9 +17,13 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: gradle
-
-    - name: Set up Android SDK
-      uses: android-actions/setup-android@v3
+  
+    - name: Install Android SDK bits
+      run: |
+        sdkmanager --install \
+          "platforms;android-34" \
+          "build-tools;34.0.0" \
+          "platform-tools"
 
     - name: Grant execute permission for gradlew
       working-directory: src/Android
@@ -54,4 +58,5 @@ jobs:
         keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
         alias: ${{ secrets.KEY_ALIAS }}
         keyPassword: ${{ secrets.KEY_PASSWORD }}
+        buildToolsVersion: '34.0.0'
 
