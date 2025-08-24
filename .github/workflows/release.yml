@@ -48,15 +48,10 @@ jobs:
     - name: Assemble release
       working-directory: src/Android
       run: ./gradlew assembleRelease
-
-    - name: Print folder tree
-      uses: jaywcjlove/github-action-folder-tree@v1.2.0
-      with:
-        path: ./src/Android/app/build/outputs
-        depth: 10
                 
     - name: Sign Release
       uses: r0adkll/sign-android-release@v1.0.4
+      id: sign_app
       with:
         releaseDirectory: src/Android/app/build/outputs/apk/release
         signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
@@ -65,4 +60,10 @@ jobs:
         keyPassword: ${{ secrets.KEY_PASSWORD }}
       env:
           BUILD_TOOLS_VERSION: "34.0.0"
+
+    - name: Print folder tree
+      uses: jaywcjlove/github-action-folder-tree@v1.2.0
+      with:
+        path: ./src/Android/app/build/outputs
+        depth: 10
 
