@@ -31,7 +31,6 @@ class AlertDetailsScreenViewmodel(
    )
 
    init {
-      val test = context.cacheDir.listFiles()
       viewModelScope.launch {
          alertRepository.getAlertById(id).collect { details ->
             _state.update {
