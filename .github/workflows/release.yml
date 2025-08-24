@@ -52,7 +52,14 @@ jobs:
       with:
         path: ./src/Android/app/build/outputs
         depth: 10
-            
+
+    - name: Debug build-tools
+      run: |
+        echo "ANDROID_HOME=$ANDROID_HOME"
+        ls -la /usr/local/lib/android/sdk/build-tools
+        ls -la /usr/local/lib/android/sdk/build-tools/34.0.0 || true
+        ls -la /usr/local/lib/android/sdk/build-tools/34.0.0/zipalign || true
+                
     - name: Sign Release
       uses: r0adkll/sign-android-release@v1.0.4
       with:
