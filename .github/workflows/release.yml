@@ -43,7 +43,7 @@ jobs:
         versionName: ${{ github.ref_name }} 
         versionCode: ${{ github.run_number }}
 
-    - name: Assemble release bundle
+    - name: Assemble release
       working-directory: src/Android
       run: ./gradlew assembleRelease
 
@@ -54,12 +54,12 @@ jobs:
         depth: 10
             
     - name: Sign Release
-      uses: r0adkll/sign-android-release@v1
+      uses: r0adkll/sign-android-release@v1.0.4
       with:
-        releaseDirectory: src/Android/app/build/outputs/apk/release
+        releaseFile: src/Android/app/build/outputs/apk/release/app-release-unsigned.apk
         signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
         keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
         alias: ${{ secrets.KEY_ALIAS }}
-        keyPassword: ${{ secrets.KEY_PASSWORD }}
+        keyPassword: ${{ secrets.KEY_PASSWORD 
         buildToolsVersion: '34.0.0'
 
