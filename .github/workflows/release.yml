@@ -64,7 +64,7 @@ jobs:
     - name: Uploading Artifact  
       uses: actions/upload-artifact@v4
       with:
-        name: expiration-alert-${{ github.run_number }}.
+        name: expiration-alert-${{ github.run_number }}
         path: src/Android/app/build/outputs/apk/release/expiration-alert-${{ github.run_number }}.apk
         if-no-files-found: error
         
