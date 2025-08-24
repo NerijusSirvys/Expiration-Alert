@@ -51,6 +51,16 @@ class CreateAlertScreenViewmodel(
          is CreateAlertScreenActions.UpdateName -> updateName(action.value)
          CreateAlertScreenActions.ResetPicture -> resetPhoto()
          CreateAlertScreenActions.Save -> save()
+         is CreateAlertScreenActions.DeleteReminder -> deleteReminder(action.id)
+      }
+   }
+
+   private fun deleteReminder(id: String) {
+      _state.update {
+         val reminders = _state.value.reminders.toMutableList()
+         reminders.removeAll { it.id == id }
+
+         it.copy(reminders = reminders.toImmutableList())
       }
    }
 
