@@ -37,10 +37,15 @@ jobs:
       working-directory: src/Android
       run: ./gradlew assembleRelease
 
+    - name: Print folder tree
+      uses: jaywcjlove/github-action-folder-tree@v1.2.0
+      with:
+          path: src/Android/app/build/outputs/bundle/release/
+            
     - name: Sign Release
       uses: r0adkll/sign-android-release@v1
       with:
-        releaseDirectory: src/Android/app/build/outputs/bundle/release/*.apk
+        releaseDirectory: src/Android/app/build/outputs/bundle/release/app-release.apk
         signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
         keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
         alias: ${{ secrets.KEY_ALIAS }}
