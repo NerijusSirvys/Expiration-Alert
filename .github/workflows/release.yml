@@ -59,8 +59,8 @@ jobs:
       uses: Tlaster/android-sign@v1.2.2
       with:
         releaseDirectory: |
-          app/build/outputs/apk/release
-          app/build/outputs/bundle/release
+          src/Android/app/build/outputs/apk/release
+          src/Android/app/build/outputs/bundle/release
         output: build/release/signed
         signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
         keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
