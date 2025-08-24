@@ -1,4 +1,4 @@
-name: Android CI
+name: Release APK
 
 on:
   pull_request:
@@ -27,7 +27,7 @@ jobs:
       run: ./gradlew build
 
     - name: Version set
-      uses: chkfung/android-version-actions@1.2.3
+      uses: chkfung/android-version-actions@v1.2.3
       with:
         gradlePath: src/Android/app/build.gradle.kts
         versionName: ${{ github.ref_name }} 
