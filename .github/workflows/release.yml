@@ -1,100 +1,66 @@
 name: Release APK
 
+
 on:
   pull_request:
     branches: [ "main" ]
 
+
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v4
+    - name: set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-    
-      - name: Decode Keystore
-        id: decode_keystore
-        uses: timheuer/base64-to-file@v1
-        with:
-          fileName: 'keystore/app-keystore.jks'
-          encodedString: ${{ secrets.ANDROID_KEYSTORE }}
-
-      - name: Print folder tree
-        uses: jaywcjlove/github-action-folder-tree@v1.2.0
-        with:
-          path: .
-          depth: 80
-
-
-# on:
-#   pull_request:
-#     branches: [ "main" ]
-
-
-# jobs:
-#   build:
-
-#     runs-on: ubuntu-latest
-
-#     steps:
-#     - uses: actions/checkout@v4
-#     - name: set up JDK 17
-#       uses: actions/setup-java@v4
-#       with:
-#         java-version: '17'
-#         distribution: 'temurin'
-#         cache: gradle
-
-#     - name: Set up Android SDK
-#       uses: android-actions/setup-android@v3
+    # - name: Set up Android SDK
+    #   uses: android-actions/setup-android@v3
   
-#     - name: Install Android SDK bits
-#       run: |
-#         sdkmanager --install \
-#           "platforms;android-34" \
-#           "build-tools;34.0.0" \
-#           "platform-tools"
+    # - name: Install Android SDK bits
+    #   run: |
+    #     sdkmanager --install \
+    #       "platforms;android-34" \
+    #       "build-tools;34.0.0" \
+    #       "platform-tools"
 
-#     - name: Grant execute permission for gradlew
-#       working-directory: src/Android
-#       run: chmod +x gradlew
+    - name: Grant execute permission for gradlew
+      working-directory: src/Android
+      run: chmod +x gradlew
       
-#     - name: Build with Gradle
-#       working-directory: src/Android
-#       run: ./gradlew build
+    - name: Build with Gradle
+      working-directory: src/Android
+      run: ./gradlew build
 
-#     - name: Version set
-#       uses: chkfung/android-version-actions@v1.2.3
-#       with:
-#         gradlePath: src/Android/app/build.gradle.kts
-#         versionName: ${{ github.ref_name }} 
-#         versionCode: ${{ github.run_number }}
+    - name: Version set
+      uses: chkfung/android-version-actions@v1.2.3
+      with:
+        gradlePath: src/Android/app/build.gradle.kts
+        versionName: ${{ github.ref_name }} 
+        versionCode: ${{ github.run_number }}
 
-#     - name: Assemble release
-#       working-directory: src/Android
-#       run: ./gradlew assembleRelease
+    - name: Assemble release
+      working-directory: src/Android
+      run: ./gradlew assembleRelease
 
-#     - name: Print folder tree
-#       uses: jaywcjlove/github-action-folder-tree@v1.2.0
-#       with:
-#         path: ./src/Android/app/build/outputs
-#         depth: 10
-
-#     - name: Debug build-tools
-#       run: |
-#         echo "ANDROID_HOME=$ANDROID_HOME"
-#         ls -la /usr/local/lib/android/sdk/build-tools
-#         ls -la /usr/local/lib/android/sdk/build-tools/34.0.0 || true
-#         ls -la /usr/local/lib/android/sdk/build-tools/34.0.0/zipalign || true
+    - name: Print folder tree
+      uses: jaywcjlove/github-action-folder-tree@v1.2.0
+      with:
+        path: ./src/Android/app/build/outputs
+        depth: 10
                 
-#     - name: Sign Release
-#       uses: r0adkll/sign-android-release@v1.0.4
-#       with:
-#         releaseDirectory: src/Android/app/build/outputs/apk/release
-#         signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
-#         keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-#         alias: ${{ secrets.KEY_ALIAS }}
-#         keyPassword: ${{ secrets.KEY_PASSWORD }}
-#         buildToolsVersion: '34.0.0'
+    - name: Sign Release
+      uses: Tlaster/android-sign@v1.2.2
+      with:
+        releaseDirectory: src/Android/app/build/outputs/apk/release
+        signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
+        keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+        alias: ${{ secrets.KEY_ALIAS }}
+        keyPassword: ${{ secrets.KEY_PASSWORD }}
 
