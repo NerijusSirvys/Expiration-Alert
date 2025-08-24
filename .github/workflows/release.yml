@@ -1,6 +1,5 @@
 name: Release APK
 
-
 on:
   push:
     tags: ['v*']
