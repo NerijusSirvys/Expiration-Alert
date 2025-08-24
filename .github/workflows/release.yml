@@ -7,6 +7,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+    
       - name: Decode Keystore
         id: decode_keystore
         uses: timheuer/base64-to-file@v1
