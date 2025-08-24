@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.internal.toImmutableList
 import java.io.File
 import java.util.UUID
@@ -78,31 +79,41 @@ class CreateAlertScreenViewmodel(
    }
 
    private fun save() {
-      val state = _state.value
-      if (!state.name.isValid || !state.quantity.isValid || !state.notes.isValid || !state.expirationDate.isValid) {
-         viewModelScope.launch {
+      viewModelScope.launch {
+         _state.update { it.copy(isLoading = true) }
+         val state = _state.value
+         if (!state.name.isValid || !state.quantity.isValid || !state.notes.isValid || !state.expirationDate.isValid) {
             _channel.send(CreateAlertScreenEvents.MissingInformation)
-         }
-      } else {
-         try {
-            val id = UUID.randomUUID().toString()
+            _state.update { it.copy(isLoading = false) }
+         } else {
+            try {
+               val nameIsValid = _state.value.name.value.isNotEmpty()
+               val quantityIsValid = _state.value.quantity.value.isNotEmpty()
+               val expirationIsValid = _state.value.expirationDate.value.isNotEmpty()
+               if (!nameIsValid || !quantityIsValid || !expirationIsValid) {
+                  _channel.send(CreateAlertScreenEvents.MissingInformation)
+                  _state.update { it.copy(isLoading = false) }
+               } else {
 
-            val imageFileName = "${_state.value.name.value}_${id}.webp"
-            val stream = _state.value.image?.toWebPStream()
+                  val id = UUID.randomUUID().toString()
 
-            val path = stream?.let { bytes ->
-               val file = File(context.filesDir, imageFileName)
-               file.outputStream().use { it.write(bytes) }
-               file.absolutePath
-            } ?: ""
+                  val imageFileName = "${state.name.value}_${id}.webp"
+                  withContext(Dispatchers.IO) {
+                     val stream = state.image?.toWebPStream()
 
-            viewModelScope.launch(Dispatchers.IO) {
-               repository.saveAlert(id, path, _state.value)
-               _channel.send(CreateAlertScreenEvents.AlertSavedSuccess)
-            }
-         } catch (e: Exception) {
-            Log.e(CreateAlertScreenViewmodel::class.qualifiedName, "Failed to save the alert", e)
-            viewModelScope.launch {
+                     val path = stream?.let { bytes ->
+                        val file = File(context.filesDir, imageFileName)
+                        file.outputStream().use { it.write(bytes) }
+                        file.absolutePath
+                     } ?: ""
+
+                     repository.saveAlert(id, path, state)
+                  }
+                  _channel.send(CreateAlertScreenEvents.AlertSavedSuccess)
+               }
+            } catch (e: Exception) {
+               Log.e(CreateAlertScreenViewmodel::class.qualifiedName, "Failed to save the alert", e)
+               _state.update { it.copy(isLoading = false) }
                _channel.send(CreateAlertScreenEvents.AlertSaveFailed)
             }
          }

@@ -11,4 +11,5 @@ data class CreateNewAlertScreenState(
    val expirationDate: TextFieldState = TextFieldState("", true),
    val reminders: List<Reminder> = emptyList(),
    val image: Bitmap? = null,
+   val isLoading: Boolean = false
 )

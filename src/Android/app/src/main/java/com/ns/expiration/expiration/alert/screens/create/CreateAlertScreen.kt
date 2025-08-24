@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.ns.expiration.expiration.alert.components.containers.LoaderContainer
 import com.ns.expiration.expiration.alert.utilities.ObserveAsEvents
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -48,12 +49,14 @@ fun CreateAlertScreen(
       }
    }
 
-   CreateAlertScreenContent(
-      modifier = modifier,
-      state = state,
-      onAction = vm::onAction,
-      onNavigateBack = {
-         navHostController.navigateUp()
-      }
-   )
+   LoaderContainer(isLoading = state.isLoading) {
+      CreateAlertScreenContent(
+         modifier = modifier,
+         state = state,
+         onAction = vm::onAction,
+         onNavigateBack = {
+            navHostController.navigateUp()
+         }
+      )
+   }
 }
