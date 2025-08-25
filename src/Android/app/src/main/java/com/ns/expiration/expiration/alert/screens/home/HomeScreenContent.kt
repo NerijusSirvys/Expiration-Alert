@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ns.expiration.expiration.alert.R
+import com.ns.expiration.expiration.alert.components.CenteredMessage
 import com.ns.expiration.expiration.alert.components.PainterIcon
 import com.ns.expiration.expiration.alert.components.buttons.FloatingActionButton
 import com.ns.expiration.expiration.alert.components.textFields.AppTextField
@@ -64,15 +65,20 @@ fun HomeScreenContent(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
          ) {
-            items(state.alerts, key = { alert -> alert.id }) { alert ->
-               AlertCard(
-                  imageUrl = alert.image,
-                  name = alert.name,
-                  quantity = alert.quantity,
-                  expiration = alert.expiration,
-                  reminders = alert.reminders,
-                  onClick = { onNavigateToDetails.invoke(alert.id) }
-               )
+
+            if (state.alerts.isEmpty()) {
+               item { CenteredMessage(text = "No Alerts Found") }
+            } else {
+               items(state.alerts, key = { alert -> alert.id }) { alert ->
+                  AlertCard(
+                     imageUrl = alert.image,
+                     name = alert.name,
+                     quantity = alert.quantity,
+                     expiration = alert.expiration,
+                     reminders = alert.reminders,
+                     onClick = { onNavigateToDetails.invoke(alert.id) }
+                  )
+               }
             }
          }
       }
