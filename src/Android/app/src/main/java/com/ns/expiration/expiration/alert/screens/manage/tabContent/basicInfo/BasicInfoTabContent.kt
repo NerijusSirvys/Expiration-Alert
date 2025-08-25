@@ -87,7 +87,7 @@ fun BasicInfoTabContent(
          state = expirationDate,
          onValueChange = { },
          label = { Text("Date") },
-         placeholder = { Text("MM/DD/YYYY") },
+         placeholder = { Text("YYYY-MM-DD") },
          trailingIcon = {
             PainterIcon(
                iconId = R.drawable.ic_date_range,

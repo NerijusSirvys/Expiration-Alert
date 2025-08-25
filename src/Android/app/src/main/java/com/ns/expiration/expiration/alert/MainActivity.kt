@@ -21,9 +21,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ns.expiration.expiration.alert.navigation.Destinations
-import com.ns.expiration.expiration.alert.screens.create.CreateAlertScreen
 import com.ns.expiration.expiration.alert.screens.details.AlertDetailsScreen
 import com.ns.expiration.expiration.alert.screens.home.HomeScreen
+import com.ns.expiration.expiration.alert.screens.manage.ManageAlertScreen
 import com.ns.expiration.expiration.alert.ui.theme.ExpirationAlertTheme
 
 class MainActivity : ComponentActivity() {
@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
                         snackbarHostState = snackBarHostState,
                      )
                   }
-                  composable<Destinations.NewAlert> {
+                  composable<Destinations.ManageAlert> {
                      if (!hasRequiredPermissions()) {
                         LocalActivity.current?.let { activity ->
                            ActivityCompat.requestPermissions(
@@ -62,8 +62,8 @@ class MainActivity : ComponentActivity() {
                         }
                      }
 
-                     CreateAlertScreen(
-                        navHostController = navController,
+                     ManageAlertScreen(
+                        navController = navController,
                         snackbarHostState = snackBarHostState
                      )
                   }

@@ -21,7 +21,7 @@ fun HomeScreen(
       state = state,
       onAction = vm::onAction,
       onNavigateToNewAlert = {
-         navController.navigate(Destinations.NewAlert)
+         navController.navigate(Destinations.ManageAlert(null))
       },
       onNavigateToDetails = {
          navController.navigate(Destinations.AlertDetails(it))

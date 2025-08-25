@@ -1,6 +1,4 @@
-package com.ns.expiration.expiration.alert.screens.create.data
-
-import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
+package com.ns.expiration.expiration.alert.repositories.data
 
 data class Reminder(
    val id: String,

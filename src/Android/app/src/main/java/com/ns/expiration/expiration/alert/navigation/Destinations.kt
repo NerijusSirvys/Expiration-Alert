@@ -11,5 +11,5 @@ sealed interface Destinations {
    data class AlertDetails(val id: String) : Destinations
 
    @Serializable
-   data object NewAlert : Destinations
+   data class ManageAlert(val id: String?) : Destinations
 }

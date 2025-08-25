@@ -1,14 +1,15 @@
-package com.ns.expiration.expiration.alert.screens.create
+package com.ns.expiration.expiration.alert.screens.manage
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil3.Bitmap
 import com.ns.expiration.expiration.alert.components.textFields.TextFieldState
 import com.ns.expiration.expiration.alert.repositories.AlertRepository
+import com.ns.expiration.expiration.alert.repositories.data.Reminder
 import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
-import com.ns.expiration.expiration.alert.screens.create.data.Reminder
 import com.ns.expiration.expiration.alert.utilities.DateTimeHelpers
 import com.ns.expiration.expiration.alert.utilities.toWebPStream
 import kotlinx.coroutines.Dispatchers
@@ -26,32 +27,55 @@ import java.util.UUID
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class CreateAlertScreenViewmodel(
+class ManageAlertScreenViewmodel(
+   val alertId: String? = null,
    val repository: AlertRepository,
-   val context: Context
+   val context: Context,
 ) : ViewModel() {
 
    private val _channel = Channel<CreateAlertScreenEvents>()
    val messageChannel = _channel.receiveAsFlow()
 
-   private val _state = MutableStateFlow(CreateNewAlertScreenState())
+   private val _state = MutableStateFlow(ManageAlertScreenState())
    val state = _state.stateIn(
       scope = viewModelScope,
       started = SharingStarted.WhileSubscribed(5000),
-      initialValue = CreateNewAlertScreenState()
+      initialValue = ManageAlertScreenState()
    )
 
-   fun onAction(action: CreateAlertScreenActions) {
+   init {
+      if (alertId != null) {
+         viewModelScope.launch {
+            repository.getAlertById(alertId).collect { alertDetails ->
+
+               val bitmap: Bitmap? = BitmapFactory.decodeFile(alertDetails.imageUrl)
+               _state.update {
+                  it.copy(
+                     name = TextFieldState(alertDetails.name, true),
+                     notes = TextFieldState(alertDetails.notes, true),
+                     quantity = TextFieldState(alertDetails.quantity.toString(), true),
+                     expirationDate = TextFieldState(alertDetails.expirationDate, true),
+                     isLoading = false,
+                     reminders = alertDetails.reminders,
+                     image = bitmap
+                  )
+               }
+            }
+         }
+      }
+   }
+
+   fun onAction(action: ManageAlertScreenActions) {
       when (action) {
-         is CreateAlertScreenActions.CreateReminder -> createReminder(action.value, action.range)
-         is CreateAlertScreenActions.SetExpirationDate -> setExpirationDate(action.value)
-         is CreateAlertScreenActions.UpdateQuantity -> updateQuantity(action.value)
-         is CreateAlertScreenActions.TakePicture -> takePicture(action.bitmap)
-         is CreateAlertScreenActions.UpdateNotes -> updateNotes(action.value)
-         is CreateAlertScreenActions.UpdateName -> updateName(action.value)
-         CreateAlertScreenActions.ResetPicture -> resetPhoto()
-         CreateAlertScreenActions.Save -> save()
-         is CreateAlertScreenActions.DeleteReminder -> deleteReminder(action.id)
+         is ManageAlertScreenActions.ManageReminder -> createReminder(action.value, action.range)
+         is ManageAlertScreenActions.SetExpirationDate -> setExpirationDate(action.value)
+         is ManageAlertScreenActions.UpdateQuantity -> updateQuantity(action.value)
+         is ManageAlertScreenActions.TakePicture -> takePicture(action.bitmap)
+         is ManageAlertScreenActions.UpdateNotes -> updateNotes(action.value)
+         is ManageAlertScreenActions.UpdateName -> updateName(action.value)
+         ManageAlertScreenActions.ResetPicture -> resetPhoto()
+         ManageAlertScreenActions.Save -> save()
+         is ManageAlertScreenActions.DeleteReminder -> deleteReminder(action.id)
       }
    }
 
@@ -105,7 +129,7 @@ class CreateAlertScreenViewmodel(
                   _state.update { it.copy(isLoading = false) }
                } else {
 
-                  val id = UUID.randomUUID().toString()
+                  val id = alertId ?: UUID.randomUUID().toString()
 
                   val imageFileName = "${state.name.value}_${id}.webp"
                   withContext(Dispatchers.IO) {
@@ -122,7 +146,7 @@ class CreateAlertScreenViewmodel(
                   _channel.send(CreateAlertScreenEvents.AlertSavedSuccess)
                }
             } catch (e: Exception) {
-               Log.e(CreateAlertScreenViewmodel::class.qualifiedName, "Failed to save the alert", e)
+               Log.e(ManageAlertScreenViewmodel::class.qualifiedName, "Failed to save the alert", e)
                _state.update { it.copy(isLoading = false) }
                _channel.send(CreateAlertScreenEvents.AlertSaveFailed)
             }

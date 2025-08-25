@@ -47,6 +47,7 @@ fun AlertDetailsScreen(
          state = state,
          onAction = vm::onAction,
          onNavigateBack = { navController.navigateUp() },
+         onNavigateToEdit = { navController.navigate(Destinations.ManageAlert(it)) }
       )
    }
 }
