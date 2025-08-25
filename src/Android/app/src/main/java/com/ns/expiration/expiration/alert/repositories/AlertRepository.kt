@@ -6,7 +6,9 @@ import com.ns.expiration.expiration.alert.persistance.entities.AlertWithReminder
 import com.ns.expiration.expiration.alert.persistance.entities.ReminderEntity
 import com.ns.expiration.expiration.alert.repositories.data.AlertDetails
 import com.ns.expiration.expiration.alert.repositories.data.AlertOverview
-import com.ns.expiration.expiration.alert.screens.create.CreateNewAlertScreenState
+import com.ns.expiration.expiration.alert.repositories.data.Reminder
+import com.ns.expiration.expiration.alert.screens.manage.ManageAlertScreenState
+import com.ns.expiration.expiration.alert.utilities.DateTimeHelpers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -47,7 +49,11 @@ class AlertRepository(
                notes = alert.alert.notes,
                expirationDate = alert.alert.expirationDate.toString(),
                reminders = alert.reminders.map {
-                  "${it.value} ${it.range} until expiration"
+                  Reminder(
+                     id = it.id,
+                     range = it.range,
+                     value = it.value
+                  )
                },
                imageUrl = alert.alert.imageUrl,
             )
@@ -64,8 +70,8 @@ class AlertRepository(
       alertDao.deleteAlertWithReminders(id)
    }
 
-   suspend fun saveAlert(id: String, imageUrl: String, request: CreateNewAlertScreenState) = withContext(Dispatchers.IO) {
-      val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+   suspend fun saveAlert(id: String, imageUrl: String, request: ManageAlertScreenState) = withContext(Dispatchers.IO) {
+      val formatter = DateTimeFormatter.ofPattern(DateTimeHelpers.FORMAT)
       val expirationDate = LocalDate.parse(request.expirationDate.value, formatter)
 
       val createdOn = Instant.ofEpochMilli(System.currentTimeMillis())

@@ -6,6 +6,6 @@ data class AlertDetails(
    val quantity: Int = 0,
    val notes: String = "",
    val expirationDate: String = "",
-   val reminders: List<String> = emptyList(),
+   val reminders: List<Reminder> = emptyList(),
    val imageUrl: String = "",
 )

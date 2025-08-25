@@ -21,6 +21,7 @@ import coil3.compose.SubcomposeAsyncImage
 import com.ns.expiration.expiration.alert.R
 import com.ns.expiration.expiration.alert.components.CenteredMessage
 import com.ns.expiration.expiration.alert.components.TopBar
+import com.ns.expiration.expiration.alert.components.buttons.PrimaryButton
 import com.ns.expiration.expiration.alert.components.buttons.SecondaryButton
 import com.ns.expiration.expiration.alert.screens.details.components.InformationCard
 import com.ns.expiration.expiration.alert.screens.home.components.alert.CardImageLoader
@@ -32,6 +33,7 @@ fun AlertDetailsScreenContent(
    state: AlertDetailsScreenState,
    onAction: (AlertDetailsScreenActions) -> Unit,
    onNavigateBack: () -> Unit = {},
+   onNavigateToEdit: (String) -> Unit = {}
 ) {
    Scaffold(
       modifier = modifier,
@@ -89,7 +91,7 @@ fun AlertDetailsScreenContent(
                state.data.reminders.let {
                   it.forEachIndexed { index, item ->
                      Text(
-                        text = item,
+                        text = item.toString(),
                         overflow = TextOverflow.Ellipsis
                      )
                   }
@@ -112,6 +114,11 @@ fun AlertDetailsScreenContent(
                }
             )
          }
+
+         PrimaryButton(
+            text = "Edit",
+            onClick = { onNavigateToEdit.invoke(state.data.id) }
+         )
 
          SecondaryButton(
             text = "Delete",

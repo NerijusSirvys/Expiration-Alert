@@ -1,4 +1,4 @@
-package com.ns.expiration.expiration.alert.screens.create
+package com.ns.expiration.expiration.alert.screens.manage
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
@@ -23,29 +23,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.ns.expiration.expiration.alert.R
 import com.ns.expiration.expiration.alert.components.TopBar
-import com.ns.expiration.expiration.alert.screens.create.data.AlertScreenTabs
-import com.ns.expiration.expiration.alert.screens.create.data.tabs
 import com.ns.expiration.expiration.alert.screens.create.tabContent.basicInfo.BasicInfoTabContent
 import com.ns.expiration.expiration.alert.screens.create.tabContent.picture.PictureTabContent
 import com.ns.expiration.expiration.alert.screens.create.tabContent.reminders.RemindersTabContent
+import com.ns.expiration.expiration.alert.screens.manage.data.AlertScreenTabs
+import com.ns.expiration.expiration.alert.screens.manage.data.ManageAlertType
+import com.ns.expiration.expiration.alert.screens.manage.data.tabs
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateAlertScreenContent(
+fun ManageAlertScreenContent(
    modifier: Modifier = Modifier,
-   state: CreateNewAlertScreenState,
-   onAction: (CreateAlertScreenActions) -> Unit,
+   state: ManageAlertScreenState,
+   type: ManageAlertType,
+   onAction: (ManageAlertScreenActions) -> Unit,
    onNavigateBack: () -> Unit,
 ) {
    Scaffold(
       modifier = modifier,
       topBar = {
          TopBar(
-            label = "New Alert",
+            label = when (type) {
+               ManageAlertType.Create -> "New Alert"
+               ManageAlertType.Edit -> "Edit Alert"
+            },
             navigationIcon = painterResource(R.drawable.ic_back_arrow),
             onNavigation = onNavigateBack,
             actions = {
-               IconButton(onClick = { onAction.invoke(CreateAlertScreenActions.Save) }) {
+               IconButton(onClick = { onAction.invoke(ManageAlertScreenActions.Save) }) {
                   Icon(
                      painter = painterResource(R.drawable.ic_save),
                      contentDescription = "Save alert icon"
@@ -91,24 +97,24 @@ fun CreateAlertScreenContent(
                   notes = state.notes,
                   quantity = state.quantity,
                   expirationDate = state.expirationDate,
-                  onNameChange = { onAction.invoke(CreateAlertScreenActions.UpdateName(it)) },
-                  onNotesChange = { onAction.invoke(CreateAlertScreenActions.UpdateNotes(it)) },
-                  onExpirationSet = { onAction.invoke(CreateAlertScreenActions.SetExpirationDate(it)) },
-                  onQuantityChange = { onAction.invoke(CreateAlertScreenActions.UpdateQuantity(it)) }
+                  onNameChange = { onAction.invoke(ManageAlertScreenActions.UpdateName(it)) },
+                  onNotesChange = { onAction.invoke(ManageAlertScreenActions.UpdateNotes(it)) },
+                  onExpirationSet = { onAction.invoke(ManageAlertScreenActions.SetExpirationDate(it)) },
+                  onQuantityChange = { onAction.invoke(ManageAlertScreenActions.UpdateQuantity(it)) }
                )
 
                AlertScreenTabs.Reminders -> RemindersTabContent(
                   reminders = state.reminders,
-                  onReminderRemove = { onAction.invoke(CreateAlertScreenActions.DeleteReminder(it)) },
+                  onReminderRemove = { onAction.invoke(ManageAlertScreenActions.DeleteReminder(it)) },
                   onReminderCreate = { value, range ->
-                     onAction.invoke(CreateAlertScreenActions.CreateReminder(value, range))
+                     onAction.invoke(ManageAlertScreenActions.ManageReminder(value, range))
                   }
                )
 
                AlertScreenTabs.Picture -> PictureTabContent(
                   image = state.image,
-                  onPhotoTaken = { onAction.invoke(CreateAlertScreenActions.TakePicture(it)) },
-                  onResetPhoto = { onAction.invoke(CreateAlertScreenActions.ResetPicture) },
+                  onPhotoTaken = { onAction.invoke(ManageAlertScreenActions.TakePicture(it)) },
+                  onResetPhoto = { onAction.invoke(ManageAlertScreenActions.ResetPicture) },
                )
             }
          }

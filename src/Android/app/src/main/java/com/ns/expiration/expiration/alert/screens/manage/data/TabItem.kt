@@ -1,4 +1,4 @@
-package com.ns.expiration.expiration.alert.screens.create.data
+package com.ns.expiration.expiration.alert.screens.manage.data
 
 import androidx.compose.ui.graphics.Color
 import com.ns.expiration.expiration.alert.ui.theme.SunRay

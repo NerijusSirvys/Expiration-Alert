@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ns.expiration.expiration.alert.ui.theme.OnPrimary
 
 @Composable
 fun InformationCard(
@@ -23,7 +22,7 @@ fun InformationCard(
 ) {
    Card(
       modifier = modifier.fillMaxWidth(),
-      colors = CardDefaults.cardColors(containerColor = OnPrimary)
+      colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
    ) {
       Column(
          modifier = modifier.padding(vertical = 15.dp, horizontal = 25.dp)

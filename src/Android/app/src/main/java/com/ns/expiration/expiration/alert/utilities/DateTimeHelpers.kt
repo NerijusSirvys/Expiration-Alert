@@ -5,8 +5,11 @@ import java.util.Date
 import java.util.Locale
 
 object DateTimeHelpers {
+   const val FORMAT: String = "yyyy-MM-dd"
+
    fun convertMillisToDate(millis: Long): String {
-      val formatter = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+      val formatter = SimpleDateFormat(FORMAT, Locale.getDefault())
       return formatter.format(Date(millis))
    }
+
 }

@@ -1,4 +1,4 @@
-package com.ns.expiration.expiration.alert.screens.create
+package com.ns.expiration.expiration.alert.screens.manage
 
 sealed interface CreateAlertScreenEvents {
    data object AlertSavedSuccess : CreateAlertScreenEvents

@@ -19,7 +19,9 @@ class HomeScreenViewmodel(
 
    val state = combine(_data, _state) { data, state ->
       state.copy(
-         alerts = data.filter { it.name.contains(state.searchTerm.value) }
+         alerts = data
+            .filter { it.name.contains(state.searchTerm.value, ignoreCase = true) }
+            .sortedBy { it.expiration }
       )
    }.stateIn(
       scope = viewModelScope,

@@ -1,4 +1,4 @@
-package com.ns.expiration.expiration.alert.screens.create.data
+package com.ns.expiration.expiration.alert.screens.manage.data
 
 enum class AlertScreenTabs {
    BasicInfo,
