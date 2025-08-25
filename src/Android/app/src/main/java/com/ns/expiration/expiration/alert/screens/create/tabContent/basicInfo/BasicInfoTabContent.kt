@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.ns.expiration.expiration.alert.R
@@ -43,7 +44,12 @@ fun BasicInfoTabContent(
       AppTextField(
          state = name,
          onValueChange = { onNameChange.invoke(it) },
-         label = { Text(text = "Name") }
+         label = { Text(text = "Name") },
+         keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Sentences,
+            showKeyboardOnFocus = true,
+            autoCorrectEnabled = true
+         )
       )
 
       AppTextField(
@@ -60,7 +66,12 @@ fun BasicInfoTabContent(
          onValueChange = { onNotesChange.invoke(it) },
          label = { Text(text = "Notes") },
          minLines = 4,
-         maxLines = 4
+         maxLines = 4,
+         keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Sentences,
+            showKeyboardOnFocus = true,
+            autoCorrectEnabled = true
+         )
       )
 
       Spacer(modifier.height(50.dp))
@@ -72,7 +83,6 @@ fun BasicInfoTabContent(
 
       var showModal by remember { mutableStateOf(false) }
 
-      // expirationDate?.let { DateTimeHelpers.convertMillisToDate(it) } ?: ""
       AppTextField(
          state = expirationDate,
          onValueChange = { },
