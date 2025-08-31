@@ -9,7 +9,10 @@ import coil3.disk.directory
 import coil3.memory.MemoryCache
 import coil3.request.CachePolicy
 import coil3.util.DebugLogger
+import com.ns.expiration.expiration.alert.notifications.NotificationController
 import com.ns.expiration.expiration.alert.persistance.roomModule
+import com.ns.expiration.expiration.alert.schedulers.AlarmScheduler
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -23,6 +26,12 @@ class MyApplication : Application(), SingletonImageLoader.Factory {
          androidContext(this@MyApplication)
          modules(appModule, roomModule)
       }
+
+      val notificationController by inject<NotificationController>()
+      notificationController.createChannel()
+
+      val scheduler by inject<AlarmScheduler>()
+      scheduler.setAlarm()
    }
 
    override fun newImageLoader(context: PlatformContext): ImageLoader {
