@@ -22,16 +22,15 @@ class NotificationController(
       notificationManager.createNotificationChannel(channel)
    }
 
-   fun sendNotification(content: String) {
+   fun sendNotification(content: Notification) {
       val notification = NotificationCompat.Builder(context, id)
          .setSmallIcon(R.drawable.ic_alert)
          .setContentTitle(name)
-         .setContentText(content)
+         .setContentText(content.text)
          .setPriority(NotificationCompat.PRIORITY_MAX)
          .build()
 
       val notificationManager = context.getSystemService(NotificationManager::class.java)
-      notificationManager.notify(1, notification)
-
+      notificationManager.notify(content.id.hashCode(), notification)
    }
 }

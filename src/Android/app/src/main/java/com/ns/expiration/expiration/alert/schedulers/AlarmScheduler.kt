@@ -5,35 +5,39 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.ns.expiration.expiration.alert.repositories.AlertRepository
-import org.koin.java.KoinJavaComponent.inject
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 
 class AlarmScheduler(
    private val context: Context
 ) {
+   companion object {
+      val defaultScheduleTime: LocalTime = LocalTime.of(9, 0, 0)
+   }
+
+   fun setImmediate() {
+      setAlarm(LocalDateTime.now().plusSeconds(10))
+   }
+
+   fun setAlarm(date: LocalDate) {
+      setAlarm(LocalDateTime.of(date, defaultScheduleTime))
+   }
+
    @SuppressLint("MissingPermission")
-   fun setAlarm() {
+   private fun setAlarm(dateTime: LocalDateTime) {
       val alarmManager = context.getSystemService(AlarmManager::class.java)
       val intent = Intent(context, AlarmReceiver::class.java)
 
-//    val tomorrow = LocalDate.now().plusDays(1)
-//    val dateTuRun = LocalDateTime.of(tomorrow, LocalTime.of(7, 0))
-
-      val dateTuRun = LocalDateTime.now().plusSeconds(20)
-
-      val dateToRinInMillis = dateTuRun.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000
-
-      val repo: AlertRepository by inject(AlertRepository::class.java)
+      val runAt = dateTime.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000
 
       alarmManager.setExactAndAllowWhileIdle(
-         AlarmManager.RTC_WAKEUP, dateToRinInMillis,
+         AlarmManager.RTC_WAKEUP, runAt,
          PendingIntent.getBroadcast(
             context, 0, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
          )
       )
-
    }
 }

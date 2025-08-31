@@ -31,7 +31,7 @@ class MyApplication : Application(), SingletonImageLoader.Factory {
       notificationController.createChannel()
 
       val scheduler by inject<AlarmScheduler>()
-      scheduler.setAlarm()
+      scheduler.setImmediate()
    }
 
    override fun newImageLoader(context: PlatformContext): ImageLoader {

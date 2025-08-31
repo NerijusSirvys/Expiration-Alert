@@ -12,6 +12,7 @@ import com.ns.expiration.expiration.alert.utilities.DateTimeHelpers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.withContext
@@ -24,6 +25,10 @@ import java.time.format.DateTimeFormatter
 class AlertRepository(
    val alertDao: AlertDao
 ) {
+   suspend fun getActiveAlerts(): List<AlertWithReminders> {
+      return alertDao.getAllAlertsWithReminders().first()
+   }
+
    fun getActiveAlertOverviews(): Flow<List<AlertOverview>> {
       return alertDao.getAllAlertsWithReminders().mapLatest { dataList ->
          dataList.map {
