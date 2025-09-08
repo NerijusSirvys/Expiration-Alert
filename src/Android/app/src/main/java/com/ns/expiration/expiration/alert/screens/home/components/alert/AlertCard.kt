@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import com.ns.expiration.expiration.alert.ComponentPreview
@@ -47,8 +48,7 @@ fun AlertCard(
          .height(options.height)
    ) {
       Row(
-         horizontalArrangement = Arrangement.spacedBy(20.dp),
-         verticalAlignment = Alignment.Bottom
+         verticalAlignment = Alignment.CenterVertically,
       ) {
 
          // Card image section
@@ -66,62 +66,62 @@ fun AlertCard(
             }
          )
 
-         // Card content section
-         Row(
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
-            modifier = Modifier.padding(vertical = 10.dp),
+         Column(
+            verticalArrangement = Arrangement.spacedBy(7.dp),
+            horizontalAlignment = Alignment.Start,
+            modifier = modifier.padding(horizontal = 20.dp)
          ) {
+            Text(
+               text = name,
+               style = MaterialTheme.typography.titleLarge,
+               color = options.contentColor,
+               overflow = TextOverflow.Ellipsis,
+               maxLines = 1
+            )
 
-            // Card content name and expiration date
-            Column(
-               verticalArrangement = Arrangement.spacedBy(5.dp)
+            Row(
+               horizontalArrangement = Arrangement.SpaceBetween,
+               modifier = modifier.fillMaxWidth()
             ) {
-               Text(
-                  text = name,
-                  style = MaterialTheme.typography.titleLarge,
-                  color = options.contentColor
-               )
-
                Text(
                   text = "Exp: $expiration",
                   style = MaterialTheme.typography.labelLarge,
                   color = options.contentColor
                )
-            }
 
-            // Card content reminders
-            Row(
-               verticalAlignment = Alignment.CenterVertically,
-               horizontalArrangement = Arrangement.spacedBy(5.dp)
-            ) {
-               Icon(
-                  painter = painterResource(R.drawable.ic_notifications),
-                  contentDescription = "Reminder Icon",
-                  tint = options.contentColor,
-                  modifier = Modifier.size(18.dp)
-               )
-               Text(
-                  text = reminders.toString(),
-                  color = options.contentColor
-               )
-            }
+               // Card content reminders
+               Row(
+                  verticalAlignment = Alignment.CenterVertically,
+                  horizontalArrangement = Arrangement.spacedBy(5.dp)
+               ) {
+                  Icon(
+                     painter = painterResource(R.drawable.ic_notifications),
+                     contentDescription = "Reminder Icon",
+                     tint = options.contentColor,
+                     modifier = Modifier.size(18.dp)
+                  )
+                  Text(
+                     text = reminders.toString(),
+                     color = options.contentColor
+                  )
+               }
 
-            // Card content quantity
-            Row(
-               verticalAlignment = Alignment.CenterVertically,
-               horizontalArrangement = Arrangement.spacedBy(5.dp)
-            ) {
-               Icon(
-                  painter = painterResource(R.drawable.ic_stacks),
-                  contentDescription = "Quantity Icon",
-                  tint = options.contentColor,
-                  modifier = Modifier.size(18.dp)
-               )
-               Text(
-                  text = quantity.toString(),
-                  color = options.contentColor
-               )
+               // Card content quantity
+               Row(
+                  verticalAlignment = Alignment.CenterVertically,
+                  horizontalArrangement = Arrangement.spacedBy(5.dp)
+               ) {
+                  Icon(
+                     painter = painterResource(R.drawable.ic_stacks),
+                     contentDescription = "Quantity Icon",
+                     tint = options.contentColor,
+                     modifier = Modifier.size(18.dp)
+                  )
+                  Text(
+                     text = quantity.toString(),
+                     color = options.contentColor
+                  )
+               }
             }
          }
       }
@@ -140,7 +140,7 @@ private fun Preview() {
       ) {
 
          AlertCard(
-            name = "Item 1",
+            name = "Item 1 skdjflsjf  lsjflsjf lksdjf",
             expiration = "12/05/2024",
             reminders = 5,
             quantity = 5,
