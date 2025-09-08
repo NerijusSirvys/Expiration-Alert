@@ -1,4 +1,4 @@
-package com.ns.expiration.expiration.alert.schedulers
+package com.ns.expiration.expiration.alert.receivers
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -7,11 +7,13 @@ import com.ns.expiration.expiration.alert.notifications.Notification
 import com.ns.expiration.expiration.alert.notifications.NotificationController
 import com.ns.expiration.expiration.alert.repositories.AlertRepository
 import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
+import com.ns.expiration.expiration.alert.schedulers.AlarmScheduler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
+import org.koin.java.KoinJavaComponent
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.Period
 
 class AlarmReceiver : BroadcastReceiver() {
@@ -22,10 +24,10 @@ class AlarmReceiver : BroadcastReceiver() {
 
       val pendingResult = goAsync()
 
-      val repo by inject<AlertRepository>(AlertRepository::class.java)
+      val repo by KoinJavaComponent.inject<AlertRepository>(AlertRepository::class.java)
       val today = LocalDate.now()
 
-      val notificationController by inject<NotificationController>(NotificationController::class.java)
+      val notificationController by KoinJavaComponent.inject<NotificationController>(NotificationController::class.java)
       scope.launch {
          val alerts = repo.getActiveAlerts()
 
@@ -35,13 +37,21 @@ class AlarmReceiver : BroadcastReceiver() {
                val difference = Period.between(today, reminderDate)
 
                if (difference.isNegative || difference.isZero) {
-                  notificationController.sendNotification(Notification.fromAlert(alert))
+                  notificationController.sendNotification(Notification.Companion.fromAlert(alert))
                }
             }
          }
 
-         val scheduler by inject<AlarmScheduler>(AlarmScheduler::class.java)
-         scheduler.setAlarm(today.plusDays(1))
+         val scheduler by KoinJavaComponent.inject<AlarmScheduler>(AlarmScheduler::class.java)
+
+         val timeNow = LocalTime.now()
+         val intendedTime = LocalTime.of(9, 0)
+
+         if (timeNow < intendedTime) {
+            scheduler.setAlarm(today)
+         } else {
+            scheduler.setAlarm(today.plusDays(1))
+         }
 
          pendingResult.finish()
       }
