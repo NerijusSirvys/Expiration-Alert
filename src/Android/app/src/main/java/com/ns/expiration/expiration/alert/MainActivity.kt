@@ -35,6 +35,14 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val snackBarHostState = remember { SnackbarHostState() }
 
+            if (!hasRequiredPermissions()) {
+               LocalActivity.current?.let { activity ->
+                  ActivityCompat.requestPermissions(
+                     activity, PERMISSIONS, 0
+                  )
+               }
+            }
+
             Scaffold(
                modifier = Modifier.fillMaxSize(),
                snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
@@ -54,14 +62,6 @@ class MainActivity : ComponentActivity() {
                      )
                   }
                   composable<Destinations.ManageAlert> {
-                     if (!hasRequiredPermissions()) {
-                        LocalActivity.current?.let { activity ->
-                           ActivityCompat.requestPermissions(
-                              activity, CAMERAX_PERMISSIONS, 0
-                           )
-                        }
-                     }
-
                      ManageAlertScreen(
                         navController = navController,
                         snackbarHostState = snackBarHostState
@@ -74,17 +74,15 @@ class MainActivity : ComponentActivity() {
    }
 
    fun hasRequiredPermissions(): Boolean {
-      return CAMERAX_PERMISSIONS.all {
-         ContextCompat.checkSelfPermission(
-            applicationContext,
-            it
-         ) == PackageManager.PERMISSION_GRANTED
+      return PERMISSIONS.all {
+         ContextCompat.checkSelfPermission(applicationContext, it) == PackageManager.PERMISSION_GRANTED
       }
    }
 
    companion object {
-      private val CAMERAX_PERMISSIONS = arrayOf(
+      private val PERMISSIONS = arrayOf(
          Manifest.permission.CAMERA,
+         Manifest.permission.POST_NOTIFICATIONS,
       )
    }
 }
