@@ -29,7 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import coil3.compose.AsyncImage
-import com.ns.expiration.expiration.alert.R
+import com.ns.expiration.alert.R
 import com.ns.expiration.expiration.alert.components.PainterIcon
 import com.ns.expiration.expiration.alert.components.buttons.PrimaryButton
 import com.ns.expiration.expiration.alert.ui.theme.White

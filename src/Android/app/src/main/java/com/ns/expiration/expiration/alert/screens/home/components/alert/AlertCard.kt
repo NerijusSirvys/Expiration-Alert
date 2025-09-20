@@ -24,8 +24,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
+import com.ns.expiration.alert.R
 import com.ns.expiration.expiration.alert.ComponentPreview
-import com.ns.expiration.expiration.alert.R
 import com.ns.expiration.expiration.alert.ui.theme.ExpirationAlertTheme
 
 @Composable

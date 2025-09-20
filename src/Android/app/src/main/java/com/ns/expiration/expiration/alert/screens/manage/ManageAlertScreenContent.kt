@@ -21,7 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import com.ns.expiration.expiration.alert.R
+import com.ns.expiration.alert.R
 import com.ns.expiration.expiration.alert.components.TopBar
 import com.ns.expiration.expiration.alert.screens.create.tabContent.basicInfo.BasicInfoTabContent
 import com.ns.expiration.expiration.alert.screens.create.tabContent.picture.PictureTabContent

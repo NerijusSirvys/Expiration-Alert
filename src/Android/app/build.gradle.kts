@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-   namespace = "com.ns.expiration.expiration.alert"
+   namespace = "com.ns.expiration.alert"
    compileSdk = 36
 
    defaultConfig {
-      applicationId = "com.ns.expiration.expiration.alert"
+      applicationId = "com.ns.expiration.alert"
       minSdk = 30
       targetSdk = 36
       versionCode = 1

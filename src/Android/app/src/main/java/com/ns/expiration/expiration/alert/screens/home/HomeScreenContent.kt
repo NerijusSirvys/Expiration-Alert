@@ -17,7 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ns.expiration.expiration.alert.R
+import com.ns.expiration.alert.R
 import com.ns.expiration.expiration.alert.components.CenteredMessage
 import com.ns.expiration.expiration.alert.components.PainterIcon
 import com.ns.expiration.expiration.alert.components.buttons.FloatingActionButton
