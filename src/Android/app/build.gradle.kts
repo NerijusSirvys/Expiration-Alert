@@ -4,10 +4,12 @@ plugins {
    alias(libs.plugins.kotlin.compose)
    alias(libs.plugins.serialization)
    alias(libs.plugins.ksp)
+   alias(libs.plugins.google.gms.google.services)
+   alias(libs.plugins.google.firebase.crashlytics)
 }
 
 android {
-   namespace = "com.ns.expiration.alert"
+   namespace = "com.ns.expiration.expiration.alert"
    compileSdk = 36
 
    defaultConfig {
@@ -69,6 +71,9 @@ dependencies {
 
    // Work Manager
    implementation(libs.androidx.work.manager)
+
+   // Firebase
+   implementation(libs.firebase.crashlytics)
 
    ksp(libs.room.compiler)
 

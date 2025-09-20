@@ -4,7 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationCompat
-import com.ns.expiration.alert.R
+import com.ns.expiration.expiration.alert.R
 
 class NotificationController(
    private val context: Context

@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ns.expiration.alert.R
+import com.ns.expiration.expiration.alert.R
 import com.ns.expiration.expiration.alert.components.PainterIcon
 import com.ns.expiration.expiration.alert.ui.theme.ExpirationAlertTheme
 import com.ns.expiration.expiration.alert.ui.theme.White

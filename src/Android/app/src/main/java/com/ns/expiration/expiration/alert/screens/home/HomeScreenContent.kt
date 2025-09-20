@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -17,7 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ns.expiration.alert.R
+import com.ns.expiration.expiration.alert.R
 import com.ns.expiration.expiration.alert.components.CenteredMessage
 import com.ns.expiration.expiration.alert.components.PainterIcon
 import com.ns.expiration.expiration.alert.components.buttons.FloatingActionButton
@@ -64,6 +65,11 @@ fun HomeScreenContent(
          )
 
          Spacer(modifier = Modifier.height(25.dp))
+
+         Button(onClick = { throw RuntimeException("Test Crash") }) {
+            Text(text = "Crash")
+         }
+
 
          LazyColumn(
             modifier = modifier.fillMaxSize(),
