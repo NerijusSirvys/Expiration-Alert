@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -65,11 +64,6 @@ fun HomeScreenContent(
          )
 
          Spacer(modifier = Modifier.height(25.dp))
-
-         Button(onClick = { throw RuntimeException("Test Crash") }) {
-            Text(text = "Crash")
-         }
-
 
          LazyColumn(
             modifier = modifier.fillMaxSize(),

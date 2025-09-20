@@ -17,6 +17,7 @@ val appModule = module {
 
    singleOf(::AlarmScheduler)
    singleOf(::NotificationController)
+   singleOf(::GoogleSignInClient)
 
    viewModelOf(::HomeScreenViewmodel)
    viewModelOf(::AlertDetailsScreenViewmodel)
