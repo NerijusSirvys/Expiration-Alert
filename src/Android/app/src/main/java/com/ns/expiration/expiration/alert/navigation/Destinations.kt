@@ -8,6 +8,9 @@ sealed interface Destinations {
    data object Home : Destinations
 
    @Serializable
+   data object Authentication : Destinations
+
+   @Serializable
    data class AlertDetails(val id: String) : Destinations
 
    @Serializable

@@ -21,10 +21,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ns.expiration.expiration.alert.navigation.Destinations
+import com.ns.expiration.expiration.alert.screens.authentication.AuthenticationScreen
 import com.ns.expiration.expiration.alert.screens.details.AlertDetailsScreen
 import com.ns.expiration.expiration.alert.screens.home.HomeScreen
 import com.ns.expiration.expiration.alert.screens.manage.ManageAlertScreen
 import com.ns.expiration.expiration.alert.ui.theme.ExpirationAlertTheme
+import org.koin.compose.koinInject
 
 class MainActivity : ComponentActivity() {
    override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +45,11 @@ class MainActivity : ComponentActivity() {
                }
             }
 
+            val authClient = koinInject<GoogleSignInClient>()
+
+            val destination = if (authClient.signedIn()) Destinations.Home
+            else Destinations.Authentication
+
             Scaffold(
                modifier = Modifier.fillMaxSize(),
                snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
@@ -52,7 +59,7 @@ class MainActivity : ComponentActivity() {
                      .padding(innerPadding)
                      .padding(horizontal = 15.dp),
                   navController = navController,
-                  startDestination = Destinations.Home
+                  startDestination = destination
                ) {
                   composable<Destinations.Home> { HomeScreen(navController = navController) }
                   composable<Destinations.AlertDetails> {
@@ -65,6 +72,13 @@ class MainActivity : ComponentActivity() {
                      ManageAlertScreen(
                         navController = navController,
                         snackbarHostState = snackBarHostState
+                     )
+                  }
+                  composable<Destinations.Authentication> {
+                     AuthenticationScreen(
+                        navController = navController,
+                        snackbarHostState = snackBarHostState,
+                        googleSignInClient = authClient
                      )
                   }
                }

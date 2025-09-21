@@ -8,6 +8,7 @@ import androidx.credentials.GetCredentialResponse
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.Firebase
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.tasks.await
@@ -17,12 +18,17 @@ class GoogleSignInClient(
 ) {
    private val credentialManager = CredentialManager.create(context)
 
-   suspend fun signIn(): Boolean {
+   suspend fun signIn(onSuccess: () -> Unit = {}, onError: (message: String) -> Unit = {}) {
       try {
-         val result = getCredentialRequest(getGoogleIdOptions())
-         return handleSignIn(result)
+         val credResponse = getCredentialRequest(getGoogleIdOptions())
+         val authResult = handleSignIn(credResponse)
+         if (authResult == null || authResult.user == null) {
+            onError.invoke("Failed to sign in")
+         } else {
+            onSuccess.invoke()
+         }
       } catch (e: Exception) {
-         return false
+         onError.invoke("Failed to sign in")
       }
    }
 
@@ -30,18 +36,15 @@ class GoogleSignInClient(
       return Firebase.auth.currentUser != null
    }
 
-   private suspend fun handleSignIn(credentialResponse: GetCredentialResponse): Boolean {
-
+   private suspend fun handleSignIn(credentialResponse: GetCredentialResponse): AuthResult? {
       val credential = credentialResponse.credential
-
       if (credential is CustomCredential && credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
          val tokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
          val authCredential = GoogleAuthProvider.getCredential(tokenCredential.idToken, null)
 
-         val authResult = Firebase.auth.signInWithCredential(authCredential).await()
-         return authResult != null
+         return Firebase.auth.signInWithCredential(authCredential).await()
       } else {
-         return false
+         return null
       }
    }
 
