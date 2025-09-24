@@ -47,6 +47,14 @@ class MainActivity : ComponentActivity() {
 
             val authClient = koinInject<GoogleSignInClient>()
 
+            authClient.setupTokenRefreshListener(onRefreshFailed = {
+               navController.navigate(Destinations.Authentication) {
+                  this.popUpTo(Destinations.Authentication) {
+                     inclusive = true
+                  }
+               }
+            })
+
             val destination = if (authClient.signedIn()) Destinations.Home
             else Destinations.Authentication
 

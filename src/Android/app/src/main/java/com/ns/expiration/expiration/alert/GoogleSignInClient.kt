@@ -9,14 +9,27 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.Firebase
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
+import com.google.firebase.crashlytics.crashlytics
 import kotlinx.coroutines.tasks.await
 
 class GoogleSignInClient(
    private val context: Context
 ) {
    private val credentialManager = CredentialManager.create(context)
+
+   fun setupTokenRefreshListener(onRefreshFailed: () -> Unit) {
+      val idTokenListener = FirebaseAuth.IdTokenListener {
+         it.currentUser?.getIdToken(false)?.addOnFailureListener { e ->
+            Firebase.crashlytics.recordException(e)
+            onRefreshFailed.invoke()
+         }
+      }
+
+      Firebase.auth.addIdTokenListener(idTokenListener)
+   }
 
    suspend fun signIn(onSuccess: () -> Unit = {}, onError: (message: String) -> Unit = {}) {
       try {
@@ -28,12 +41,14 @@ class GoogleSignInClient(
             onSuccess.invoke()
          }
       } catch (e: Exception) {
+         Firebase.crashlytics.recordException(e)
          onError.invoke("Failed to sign in")
       }
    }
 
    fun signedIn(): Boolean {
-      return Firebase.auth.currentUser != null
+      val signedIn = Firebase.auth.currentUser != null
+      return signedIn
    }
 
    private suspend fun handleSignIn(credentialResponse: GetCredentialResponse): AuthResult? {
