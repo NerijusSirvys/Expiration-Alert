@@ -9,6 +9,9 @@ import coil3.disk.directory
 import coil3.memory.MemoryCache
 import coil3.request.CachePolicy
 import coil3.util.DebugLogger
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.initialize
 import com.ns.expiration.expiration.alert.notifications.NotificationController
 import com.ns.expiration.expiration.alert.persistance.roomModule
 import com.ns.expiration.expiration.alert.schedulers.AlarmScheduler
@@ -26,6 +29,9 @@ class MyApplication : Application(), SingletonImageLoader.Factory {
          androidContext(this@MyApplication)
          modules(appModule, roomModule)
       }
+
+      Firebase.initialize(this@MyApplication)
+      FirebaseFirestore.setLoggingEnabled(true)
 
       val notificationController by inject<NotificationController>()
       notificationController.createChannel()

@@ -1,5 +1,11 @@
 package com.ns.expiration.expiration.alert.repositories
 
+import androidx.core.net.toUri
+import coil3.Uri
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.ns.expiration.expiration.alert.persistance.dao.AlertDao
 import com.ns.expiration.expiration.alert.persistance.entities.AlertEntity
 import com.ns.expiration.expiration.alert.persistance.entities.AlertWithReminders
@@ -16,6 +22,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -23,7 +30,9 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AlertRepository(
-   val alertDao: AlertDao
+   val alertDao: AlertDao,
+   val firestore: FirebaseFirestore,
+   val storage: FirebaseStorage
 ) {
    suspend fun getActiveAlerts(): List<AlertWithReminders> {
       return alertDao.getAllAlertsWithReminders().first()
@@ -104,6 +113,45 @@ class AlertRepository(
                createdOn = createdOn,
             )
          )
+
+
+         Firebase.auth.currentUser?.let { user ->
+            val alert_rec = hashMapOf(
+               "id" to id,
+               "name" to request.name.value,
+               "quantity" to request.quantity.value.toInt(),
+               "notes" to request.notes.value,
+               "imageUrl" to imageUrl,
+               "expirationDate" to expirationDate,
+               "createdOn" to createdOn,
+            )
+
+            firestore.collection("users").document(user.uid)
+               .collection("alerts").document(alert.id)
+               .set(alert_rec)
+
+            reminders.forEach { reminder ->
+               val reminder_rec = hashMapOf(
+                  "id" to it.id,
+                  "alertId" to alert.id,
+                  "range" to it.range,
+                  "value" to it.value,
+                  "createdOn" to createdOn,
+               )
+
+               firestore.collection("users").document(user.uid)
+                  .collection("reminders").document(reminder.id)
+                  .set(reminder_rec)
+            }
+
+            val imageUri = Uri(imageUrl)
+            val imageName = imageUri.scheme?.split(imageUri.separator)?.last()
+
+            val img = storage.reference.child("${user.uid}/images/${alert.id}/$imageName")
+            val file = File(alert.imageUrl)
+
+            img.putFile(file.toUri())
+         }
       }
 
       alertDao.insertAlertWithReminders(AlertWithReminders(alert, reminders))

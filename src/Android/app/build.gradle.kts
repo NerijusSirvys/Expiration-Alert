@@ -73,11 +73,13 @@ dependencies {
    implementation(libs.androidx.work.manager)
 
    // Firebase
-   implementation(libs.firebase.crashlytics)
-   implementation(libs.firebase.auth)
+   implementation(libs.googleid)
    implementation(libs.androidx.credentials)
    implementation(libs.androidx.credentials.play.services.auth)
-   implementation(libs.googleid)
+   implementation(libs.firebase.crashlytics)
+   implementation(libs.firebase.firestore)
+   implementation(libs.firebase.storage)
+   implementation(libs.firebase.auth)
 
    ksp(libs.room.compiler)
 

@@ -27,7 +27,6 @@ fun AuthenticationScreenContent(
    modifier: Modifier = Modifier,
    onAuthenticate: () -> Unit
 ) {
-
    Column(
       modifier = modifier.fillMaxSize(),
       horizontalAlignment = Alignment.CenterHorizontally
