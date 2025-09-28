@@ -1,7 +1,7 @@
 package com.ns.expiration.expiration.alert.screens.manage
 
 import coil3.Bitmap
-import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
+import com.ns.expiration.expiration.alert.repositories.local.data.ReminderRange
 
 sealed interface ManageAlertScreenActions {
    data class UpdateName(val value: String) : ManageAlertScreenActions

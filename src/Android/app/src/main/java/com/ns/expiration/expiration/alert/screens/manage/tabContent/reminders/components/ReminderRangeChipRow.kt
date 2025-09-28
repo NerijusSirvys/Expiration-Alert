@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
+import com.ns.expiration.expiration.alert.repositories.local.data.ReminderRange
 
 @Composable
 fun ReminderRangeChipRow(

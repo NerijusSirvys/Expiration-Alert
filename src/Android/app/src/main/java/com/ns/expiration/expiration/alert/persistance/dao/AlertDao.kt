@@ -50,7 +50,7 @@ interface AlertDao {
    }
 
    @Transaction
-   suspend fun deleteAlertWithReminders(alertId: String) {
+   suspend fun deleteAlertWithReminders(alertId: String): AlertWithReminders {
       val alert = getAlertWithReminders(alertId)
 
       alert.reminders.forEach {
@@ -58,5 +58,7 @@ interface AlertDao {
       }
 
       deleteAlert(alert.alert)
+
+      return alert
    }
 }

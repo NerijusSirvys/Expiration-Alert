@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ns.expiration.expiration.alert.repositories.AlertRepository
+import com.ns.expiration.expiration.alert.services.AlertService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class AlertDetailsScreenViewmodel(
    val id: String,
-   val alertRepository: AlertRepository,
+   val alertService: AlertService,
    val context: Context
 ) : ViewModel() {
 
@@ -33,7 +33,7 @@ class AlertDetailsScreenViewmodel(
 
    init {
       viewModelScope.launch(Dispatchers.IO) {
-         alertRepository.getAlertById(id).collect { details ->
+         alertService.getAlertById(id).collect { details ->
             _state.update {
                it.copy(isLoading = false, data = details)
             }
@@ -51,7 +51,7 @@ class AlertDetailsScreenViewmodel(
       viewModelScope.launch {
          _state.update { it.copy(isLoading = true) }
          try {
-            alertRepository.deleteAlert(id)
+            alertService.deleteAlert(id)
             context.deleteFile("${_state.value.data.name}_${id}.webp")
 
             // make loading look better

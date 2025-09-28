@@ -16,10 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ns.expiration.expiration.alert.ComponentPreview
 import com.ns.expiration.expiration.alert.components.buttons.PrimaryButton
-import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
+import com.ns.expiration.expiration.alert.repositories.local.data.ReminderRange
 import com.ns.expiration.expiration.alert.screens.create.tabContent.reminders.components.ReminderDialog
 import com.ns.expiration.expiration.alert.screens.create.tabContent.reminders.components.RemindersLazyList
-import com.ns.expiration.expiration.alert.repositories.data.Reminder
+import com.ns.expiration.expiration.alert.repositories.local.data.Reminder
 import com.ns.expiration.expiration.alert.ui.theme.ExpirationAlertTheme
 import com.ns.expiration.expiration.alert.utilities.maxHeight
 

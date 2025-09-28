@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.ns.expiration.expiration.alert.R
 import com.ns.expiration.expiration.alert.components.PainterIcon
 import com.ns.expiration.expiration.alert.components.buttons.AppTextButton
-import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
+import com.ns.expiration.expiration.alert.repositories.local.data.ReminderRange
 import com.ns.expiration.expiration.alert.ui.theme.ExpirationAlertTheme
 import com.ns.expiration.expiration.alert.ui.theme.White
 
