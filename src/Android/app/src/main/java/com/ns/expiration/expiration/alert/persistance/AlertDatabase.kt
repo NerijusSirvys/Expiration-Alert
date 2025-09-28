@@ -9,7 +9,7 @@ import com.ns.expiration.expiration.alert.persistance.dao.AlertDao
 import com.ns.expiration.expiration.alert.persistance.entities.AlertEntity
 import com.ns.expiration.expiration.alert.persistance.entities.AlertWithReminders
 import com.ns.expiration.expiration.alert.persistance.entities.ReminderEntity
-import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
+import com.ns.expiration.expiration.alert.repositories.local.data.ReminderRange
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
