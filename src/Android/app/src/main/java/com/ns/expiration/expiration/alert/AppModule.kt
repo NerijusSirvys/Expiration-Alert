@@ -6,10 +6,12 @@ import com.ns.expiration.expiration.alert.notifications.NotificationController
 import com.ns.expiration.expiration.alert.repositories.cloud.AlertOnCloudRepository
 import com.ns.expiration.expiration.alert.repositories.local.AlertOnDiskRepository
 import com.ns.expiration.expiration.alert.schedulers.AlarmScheduler
+import com.ns.expiration.expiration.alert.schedulers.CloudWorker
 import com.ns.expiration.expiration.alert.screens.details.AlertDetailsScreenViewmodel
 import com.ns.expiration.expiration.alert.screens.home.HomeScreenViewmodel
 import com.ns.expiration.expiration.alert.screens.manage.ManageAlertScreenViewmodel
 import com.ns.expiration.expiration.alert.services.AlertService
+import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
@@ -32,6 +34,7 @@ val appModule = module {
       FirebaseStorage.getInstance("gs://expiration-alert-d2ccd.firebasestorage.app")
    }
 
+   workerOf(::CloudWorker)
 
    viewModelOf(::HomeScreenViewmodel)
    viewModelOf(::AlertDetailsScreenViewmodel)

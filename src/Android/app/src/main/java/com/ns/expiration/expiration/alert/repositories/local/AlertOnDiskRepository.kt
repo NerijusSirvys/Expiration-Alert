@@ -6,6 +6,7 @@ import com.ns.expiration.expiration.alert.persistance.entities.AlertWithReminder
 import com.ns.expiration.expiration.alert.persistance.entities.ReminderEntity
 import com.ns.expiration.expiration.alert.repositories.local.data.AlertDetails
 import com.ns.expiration.expiration.alert.repositories.local.data.AlertOverview
+import com.ns.expiration.expiration.alert.repositories.local.data.BackupState
 import com.ns.expiration.expiration.alert.repositories.local.data.Reminder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,7 +26,7 @@ class AlertOnDiskRepository(
 
    fun getActiveAlertOverviews(): Flow<List<AlertOverview>> {
       return alertDao.getAllAlertsWithReminders().mapLatest { dataList ->
-         dataList.map {
+         dataList.filter { it.alert.state != BackupState.PendingDelete }.map {
             AlertOverview(
                id = it.alert.id,
                name = it.alert.name,
@@ -69,7 +70,20 @@ class AlertOnDiskRepository(
       return@withContext alertDao.deleteAlertWithReminders(id)
    }
 
+   suspend fun getAlertsWithReminders(state: BackupState): List<AlertWithReminders> {
+      return alertDao.getAlertsByState(state)
+   }
+
+
    suspend fun saveAlert(alert: AlertEntity, reminders: List<ReminderEntity>) = withContext(Dispatchers.IO) {
       alertDao.insertAlertWithReminders(AlertWithReminders(alert, reminders))
+   }
+
+   suspend fun updateAlertState(id: String, state: BackupState) = withContext(Dispatchers.IO) {
+      if (id.isEmpty())
+         throw IllegalArgumentException("Id cannot be empty")
+
+      val alert = alertDao.getAlert(id)
+      alertDao.insertAlert(alert.copy(state = state))
    }
 }

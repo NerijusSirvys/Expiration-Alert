@@ -10,6 +10,7 @@ import androidx.room.Update
 import com.ns.expiration.expiration.alert.persistance.entities.AlertEntity
 import com.ns.expiration.expiration.alert.persistance.entities.AlertWithReminders
 import com.ns.expiration.expiration.alert.persistance.entities.ReminderEntity
+import com.ns.expiration.expiration.alert.repositories.local.data.BackupState
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -22,6 +23,9 @@ interface AlertDao {
    @Transaction
    @Query("SELECT * FROM alerts WHERE id = :id")
    suspend fun getAlertWithReminders(id: String): AlertWithReminders
+
+   @Query("SELECT * FROM alerts WHERE state = :state ")
+   suspend fun getAlertsByState(state: BackupState): List<AlertWithReminders>
 
    @Insert(onConflict = REPLACE)
    suspend fun insertReminder(data: ReminderEntity)

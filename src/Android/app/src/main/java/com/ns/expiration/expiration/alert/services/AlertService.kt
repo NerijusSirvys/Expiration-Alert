@@ -6,6 +6,7 @@ import com.ns.expiration.expiration.alert.repositories.cloud.AlertOnCloudReposit
 import com.ns.expiration.expiration.alert.repositories.local.AlertOnDiskRepository
 import com.ns.expiration.expiration.alert.repositories.local.data.AlertDetails
 import com.ns.expiration.expiration.alert.repositories.local.data.AlertOverview
+import com.ns.expiration.expiration.alert.repositories.local.data.BackupState
 import com.ns.expiration.expiration.alert.screens.manage.ManageAlertScreenState
 import com.ns.expiration.expiration.alert.utilities.DateTimeHelpers
 import kotlinx.coroutines.flow.Flow
@@ -32,29 +33,30 @@ class AlertService(
          .atZone(ZoneId.systemDefault())
          .toLocalDateTime()
 
-      val alert = request.toAlertEntity(id, imageUrl, createdOn, expirationDate)
+      val alert = request.toAlertEntity(id, imageUrl, createdOn, expirationDate, BackupState.PendingUpload)
       val reminders = request.toReminderEntities(id, createdOn)
       localRepo.saveAlert(alert, reminders)
 
-      val alertMap = request.toAlertMap(id, imageUrl, createdOn, expirationDate)
-      val reminderMaps = request.toRemindersMapList(id, createdOn)
-      cloudRepo.uploadAlert(alertMap, reminderMaps, imageUrl)
+//      val alertMap = request.toAlertMap(id, imageUrl, createdOn, expirationDate)
+//      val reminderMaps = request.toRemindersMapList(id, createdOn)
+//      cloudRepo.uploadAlert(alertMap, reminderMaps, imageUrl)
    }
 
    suspend fun deleteAlert(id: String) {
-      val alert = localRepo.deleteAlert(id)
-
-      val reminderIds = alert.reminders.map { reminder -> reminder.id }
-      val imageName = alert.alert.imageUrl.split("/").last()
-
-      cloudRepo.deleteAlert(id, reminderIds, imageName)
+      localRepo.updateAlertState(id, BackupState.PendingDelete)
    }
 
    fun getActiveAlertOverviews(): Flow<List<AlertOverview>> {
       return localRepo.getActiveAlertOverviews()
    }
 
-   private fun ManageAlertScreenState.toAlertEntity(id: String, imageUri: String, createdOn: LocalDateTime, expirationDate: LocalDate): AlertEntity {
+   private fun ManageAlertScreenState.toAlertEntity(
+      id: String,
+      imageUri: String,
+      createdOn: LocalDateTime,
+      expirationDate: LocalDate,
+      state: BackupState
+   ): AlertEntity {
       return AlertEntity(
          id = id,
          name = this.name.value,
@@ -63,6 +65,7 @@ class AlertService(
          imageUrl = imageUri,
          expirationDate = expirationDate,
          createdOn = createdOn,
+         state = state
       )
    }
 
