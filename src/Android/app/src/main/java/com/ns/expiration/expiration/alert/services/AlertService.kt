@@ -1,5 +1,7 @@
 package com.ns.expiration.expiration.alert.services
 
+import com.google.firebase.Firebase
+import com.google.firebase.crashlytics.crashlytics
 import com.ns.expiration.expiration.alert.GoogleSignInClient
 import com.ns.expiration.expiration.alert.extensions.toAlertEntity
 import com.ns.expiration.expiration.alert.extensions.toAlerts
@@ -12,6 +14,7 @@ import com.ns.expiration.expiration.alert.repositories.local.data.AlertOverview
 import com.ns.expiration.expiration.alert.repositories.local.data.BackupState
 import com.ns.expiration.expiration.alert.screens.manage.ManageAlertScreenState
 import com.ns.expiration.expiration.alert.utilities.DateTimeHelpers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import java.time.Instant
 import java.time.LocalDate
@@ -50,18 +53,25 @@ class AlertService(
    }
 
    suspend fun downloadBackups() {
-      val userId = googleClient.getUserId()
-      if (userId.isEmpty()) return
+      try {
+         val userId = googleClient.getUserId()
+         if (userId.isEmpty()) return
 
-      val alertMaps = cloudRepo.downloadAlerts(userId)
-      val alerts = alertMaps.toAlerts()
-      alerts?.forEach { alert ->
-         cloudRepo.downloadAlertImage(userId, alert.imageUrl, alert.id)
+         val alertMaps = cloudRepo.downloadAlerts(userId)
+         val alerts = alertMaps.toAlerts()
+         alerts?.forEach { alert ->
+            cloudRepo.downloadAlertImage(userId, alert.imageUrl, alert.id)
 
-         val reminderMaps = cloudRepo.downloadReminders(userId)
-         val reminders = reminderMaps.toReminders()
-         if (reminders == null) return
-         localRepo.saveAlert(alert, reminders)
+            // add the delay for better image loading. without it you get either partial image loaded or none
+            delay(2_000)
+            val reminderMaps = cloudRepo.downloadReminders(userId)
+            val reminders = reminderMaps.toReminders()
+            if (reminders == null) return
+
+            localRepo.saveAlert(alert, reminders)
+         }
+      } catch (e: Exception) {
+         Firebase.crashlytics.recordException(Exception("Reminders not found"))
       }
    }
 }
