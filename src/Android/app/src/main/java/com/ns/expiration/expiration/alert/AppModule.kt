@@ -36,6 +36,7 @@ val appModule = module {
 
    workerOf(::CloudWorker)
 
+   viewModelOf(::ApplicationViewModel)
    viewModelOf(::HomeScreenViewmodel)
    viewModelOf(::AlertDetailsScreenViewmodel)
    viewModel { (alertId: String) ->

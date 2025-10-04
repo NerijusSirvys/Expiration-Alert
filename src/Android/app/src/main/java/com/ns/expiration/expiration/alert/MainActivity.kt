@@ -9,24 +9,30 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.ns.expiration.expiration.alert.components.navigation.DrawerContent
 import com.ns.expiration.expiration.alert.navigation.Destinations
 import com.ns.expiration.expiration.alert.screens.authentication.AuthenticationScreen
 import com.ns.expiration.expiration.alert.screens.details.AlertDetailsScreen
 import com.ns.expiration.expiration.alert.screens.home.HomeScreen
 import com.ns.expiration.expiration.alert.screens.manage.ManageAlertScreen
 import com.ns.expiration.expiration.alert.ui.theme.ExpirationAlertTheme
-import org.koin.compose.koinInject
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
    override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +42,8 @@ class MainActivity : ComponentActivity() {
          ExpirationAlertTheme {
             val navController = rememberNavController()
             val snackBarHostState = remember { SnackbarHostState() }
+            val appViewmodel = koinViewModel<ApplicationViewModel>()
+            val appState by appViewmodel.state.collectAsStateWithLifecycle()
 
             if (!hasRequiredPermissions()) {
                LocalActivity.current?.let { activity ->
@@ -45,9 +53,7 @@ class MainActivity : ComponentActivity() {
                }
             }
 
-            val authClient = koinInject<GoogleSignInClient>()
-
-            authClient.setupTokenRefreshListener(onRefreshFailed = {
+            appViewmodel.setupTokenRefreshListener(onRefreshFailed = {
                navController.navigate(Destinations.Authentication) {
                   this.popUpTo(Destinations.Authentication) {
                      inclusive = true
@@ -55,39 +61,53 @@ class MainActivity : ComponentActivity() {
                }
             })
 
-            val destination = if (authClient.signedIn()) Destinations.Home
-            else Destinations.Authentication
+            val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-            Scaffold(
-               modifier = Modifier.fillMaxSize(),
-               snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
-            ) { innerPadding ->
-               NavHost(
-                  modifier = Modifier
-                     .padding(innerPadding)
-                     .padding(horizontal = 15.dp),
-                  navController = navController,
-                  startDestination = destination
-               ) {
-                  composable<Destinations.Home> { HomeScreen(navController = navController) }
-                  composable<Destinations.AlertDetails> {
-                     AlertDetailsScreen(
-                        navController = navController,
-                        snackbarHostState = snackBarHostState,
-                     )
-                  }
-                  composable<Destinations.ManageAlert> {
-                     ManageAlertScreen(
-                        navController = navController,
-                        snackbarHostState = snackBarHostState
-                     )
-                  }
-                  composable<Destinations.Authentication> {
-                     AuthenticationScreen(
-                        navController = navController,
-                        snackbarHostState = snackBarHostState,
-                        googleSignInClient = authClient
-                     )
+            ModalNavigationDrawer(
+               drawerState = drawerState,
+               drawerContent = {
+                  DrawerContent(
+                     appState = appState,
+                     onAction = appViewmodel::onAction
+                  )
+               }
+            ) {
+               Scaffold(
+                  modifier = Modifier.fillMaxSize(),
+                  snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
+               ) { innerPadding ->
+                  NavHost(
+                     modifier = Modifier
+                        .padding(innerPadding)
+                        .padding(horizontal = 15.dp),
+                     navController = navController,
+                     startDestination = appViewmodel.destination
+                  ) {
+                     composable<Destinations.Home> {
+                        HomeScreen(
+                           navController = navController,
+                           drawerState = drawerState
+                        )
+                     }
+                     composable<Destinations.AlertDetails> {
+                        AlertDetailsScreen(
+                           navController = navController,
+                           snackbarHostState = snackBarHostState,
+                        )
+                     }
+                     composable<Destinations.ManageAlert> {
+                        ManageAlertScreen(
+                           navController = navController,
+                           snackbarHostState = snackBarHostState
+                        )
+                     }
+                     composable<Destinations.Authentication> {
+                        AuthenticationScreen(
+                           navController = navController,
+                           snackbarHostState = snackBarHostState,
+                           googleSignInClient = appViewmodel.googleClient
+                        )
+                     }
                   }
                }
             }
