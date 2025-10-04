@@ -48,8 +48,8 @@ fun ManageAlertScreenContent(
                ManageAlertType.Create -> "New Alert"
                ManageAlertType.Edit -> "Edit Alert"
             },
-            navigationIcon = painterResource(R.drawable.ic_back_arrow),
-            onNavigation = onNavigateBack,
+            primaryActionButtonIcon = painterResource(R.drawable.ic_back_arrow),
+            onPrimaryActionButton = onNavigateBack,
             actions = {
                IconButton(onClick = { onAction.invoke(ManageAlertScreenActions.Save) }) {
                   Icon(
