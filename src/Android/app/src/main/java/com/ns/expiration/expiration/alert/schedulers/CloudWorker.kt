@@ -6,7 +6,12 @@ import androidx.work.WorkerParameters
 import com.google.firebase.Firebase
 import com.google.firebase.crashlytics.crashlytics
 import com.ns.expiration.expiration.alert.GoogleSignInClient
-import com.ns.expiration.expiration.alert.persistance.entities.AlertWithReminders
+import com.ns.expiration.expiration.alert.extensions.alertId
+import com.ns.expiration.expiration.alert.extensions.imageName
+import com.ns.expiration.expiration.alert.extensions.imageUrl
+import com.ns.expiration.expiration.alert.extensions.reminderIds
+import com.ns.expiration.expiration.alert.extensions.toAlertMap
+import com.ns.expiration.expiration.alert.extensions.toReminderMap
 import com.ns.expiration.expiration.alert.repositories.cloud.AlertOnCloudRepository
 import com.ns.expiration.expiration.alert.repositories.local.AlertOnDiskRepository
 import com.ns.expiration.expiration.alert.repositories.local.data.BackupState
@@ -38,7 +43,7 @@ class CloudWorker(
       val alertsToUpload = localRepository.getAlertsWithReminders(BackupState.PendingUpload)
       alertsToUpload.forEach { alert ->
          try {
-            cloudRepository.uploadAlert(alert.toAlertMap(), alert.toReminderMap(), alert.alert.imageUrl)
+            cloudRepository.uploadAlert(alert.toAlertMap(), alert.toReminderMap(), alert.imageUrl())
             localRepository.updateAlertState(alert.alertId(), BackupState.Uploaded)
          } catch (e: Exception) {
             Firebase.crashlytics.recordException(e)
@@ -47,40 +52,4 @@ class CloudWorker(
 
       return Result.success()
    }
-}
-
-private fun AlertWithReminders.toReminderMap(): List<HashMap<String, Any>> {
-   return this.reminders.map { reminder ->
-      hashMapOf(
-         "id" to reminder.id,
-         "alertId" to this.alert.id,
-         "range" to reminder.range,
-         "value" to reminder.value,
-         "createdOn" to reminder.createdOn,
-      )
-   }
-}
-
-private fun AlertWithReminders.toAlertMap(): HashMap<String, Any> {
-   return hashMapOf(
-      "id" to this.alert.id,
-      "name" to this.alert.name,
-      "quantity" to this.alert.quantity,
-      "notes" to this.alert.notes,
-      "imageUrl" to this.alert.imageUrl,
-      "expirationDate" to this.alert.expirationDate,
-      "createdOn" to this.alert.createdOn,
-   )
-}
-
-private fun AlertWithReminders.reminderIds(): List<String> {
-   return this.reminders.map { it.id }
-}
-
-private fun AlertWithReminders.imageName(): String {
-   return this.alert.imageUrl.split("/").last()
-}
-
-private fun AlertWithReminders.alertId(): String {
-   return this.alert.id
 }
