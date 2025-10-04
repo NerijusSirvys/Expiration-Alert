@@ -1,4 +1,4 @@
-package com.ns.expiration.expiration.alert.screens.create.tabContent.reminders
+package com.ns.expiration.expiration.alert.screens.manage.tabContent.reminders
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,12 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ns.expiration.expiration.alert.ComponentPreview
 import com.ns.expiration.expiration.alert.components.buttons.PrimaryButton
+import com.ns.expiration.expiration.alert.extensions.maxHeight
+import com.ns.expiration.expiration.alert.repositories.local.data.Reminder
 import com.ns.expiration.expiration.alert.repositories.local.data.ReminderRange
 import com.ns.expiration.expiration.alert.screens.create.tabContent.reminders.components.ReminderDialog
 import com.ns.expiration.expiration.alert.screens.create.tabContent.reminders.components.RemindersLazyList
-import com.ns.expiration.expiration.alert.repositories.local.data.Reminder
 import com.ns.expiration.expiration.alert.ui.theme.ExpirationAlertTheme
-import com.ns.expiration.expiration.alert.utilities.maxHeight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
