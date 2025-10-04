@@ -56,7 +56,7 @@ class MyApplication : Application(), SingletonImageLoader.Factory {
 
       val workRequest = PeriodicWorkRequestBuilder<CloudWorker>(3, TimeUnit.HOURS)
          .setConstraints(constraints)
-         .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, Duration.ofMinutes(15))
+         .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, Duration.ofHours(1))
          .build()
 
       val workManager = WorkManager.getInstance(this@MyApplication)

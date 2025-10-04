@@ -132,7 +132,7 @@ class ManageAlertScreenViewmodel(
 
                   val imageFileName = "${state.name.value}_${id}.webp"
                   withContext(Dispatchers.IO) {
-                     val stream = state.image?.toWebPStream()
+                     val stream = state.image?.toWebPStream(10)
 
                      val path = stream?.let { bytes ->
                         val file = File(context.filesDir, imageFileName)

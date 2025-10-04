@@ -74,7 +74,6 @@ class AlertOnDiskRepository(
       return alertDao.getAlertsByState(state)
    }
 
-
    suspend fun saveAlert(alert: AlertEntity, reminders: List<ReminderEntity>) = withContext(Dispatchers.IO) {
       alertDao.insertAlertWithReminders(AlertWithReminders(alert, reminders))
    }
