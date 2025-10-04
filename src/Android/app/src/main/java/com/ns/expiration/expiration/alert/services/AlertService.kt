@@ -1,5 +1,8 @@
 package com.ns.expiration.expiration.alert.services
 
+import com.ns.expiration.expiration.alert.GoogleSignInClient
+import com.ns.expiration.expiration.alert.extensions.toAlertEntity
+import com.ns.expiration.expiration.alert.extensions.toReminderEntities
 import com.ns.expiration.expiration.alert.persistance.entities.AlertEntity
 import com.ns.expiration.expiration.alert.persistance.entities.ReminderEntity
 import com.ns.expiration.expiration.alert.repositories.cloud.AlertOnCloudRepository
@@ -7,6 +10,7 @@ import com.ns.expiration.expiration.alert.repositories.local.AlertOnDiskReposito
 import com.ns.expiration.expiration.alert.repositories.local.data.AlertDetails
 import com.ns.expiration.expiration.alert.repositories.local.data.AlertOverview
 import com.ns.expiration.expiration.alert.repositories.local.data.BackupState
+import com.ns.expiration.expiration.alert.repositories.local.data.ReminderRange
 import com.ns.expiration.expiration.alert.screens.manage.ManageAlertScreenState
 import com.ns.expiration.expiration.alert.utilities.DateTimeHelpers
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +22,8 @@ import java.time.format.DateTimeFormatter
 
 class AlertService(
    val localRepo: AlertOnDiskRepository,
-   val cloudRepo: AlertOnCloudRepository
+   val cloudRepo: AlertOnCloudRepository,
+   val googleClient: GoogleSignInClient
 ) {
 
    suspend fun getAlertById(id: String): Flow<AlertDetails> {
@@ -36,10 +41,6 @@ class AlertService(
       val alert = request.toAlertEntity(id, imageUrl, createdOn, expirationDate, BackupState.PendingUpload)
       val reminders = request.toReminderEntities(id, createdOn)
       localRepo.saveAlert(alert, reminders)
-
-//      val alertMap = request.toAlertMap(id, imageUrl, createdOn, expirationDate)
-//      val reminderMaps = request.toRemindersMapList(id, createdOn)
-//      cloudRepo.uploadAlert(alertMap, reminderMaps, imageUrl)
    }
 
    suspend fun deleteAlert(id: String) {
@@ -50,62 +51,46 @@ class AlertService(
       return localRepo.getActiveAlertOverviews()
    }
 
-   private fun ManageAlertScreenState.toAlertEntity(
-      id: String,
-      imageUri: String,
-      createdOn: LocalDateTime,
-      expirationDate: LocalDate,
-      state: BackupState
-   ): AlertEntity {
-      return AlertEntity(
-         id = id,
-         name = this.name.value,
-         quantity = this.quantity.value.toInt(),
-         notes = this.notes.value,
-         imageUrl = imageUri,
-         expirationDate = expirationDate,
-         createdOn = createdOn,
-         state = state
-      )
-   }
+   suspend fun downloadBackups() {
+      val userId = googleClient.getUserId()
+      if (userId.isEmpty()) return
 
-   private fun ManageAlertScreenState.toReminderEntities(alertId: String, createdOn: LocalDateTime): List<ReminderEntity> {
-      val reminders = mutableListOf<ReminderEntity>()
-      this.reminders.forEach {
-         reminders.add(
-            ReminderEntity(
-               id = it.id,
-               alertId = alertId,
-               range = it.range,
-               value = it.value,
-               createdOn = createdOn,
-            )
-         )
+      val alertMaps = cloudRepo.downloadAlerts(userId)
+      val alerts = alertMaps.toAlerts()
+      alerts?.forEach { alert ->
+         cloudRepo.downloadAlertImage(userId, alert.imageUrl, alert.id)
+
+         val reminderMaps = cloudRepo.downloadReminders(userId)
+         val reminders = reminderMaps.toReminders()
+         if (reminders == null) return
+         localRepo.saveAlert(alert, reminders)
       }
-
-      return reminders
    }
 
-   private fun ManageAlertScreenState.toAlertMap(id: String, imageUri: String, createdOn: LocalDateTime, expirationDate: LocalDate): HashMap<String, Any> {
-      return hashMapOf(
-         "id" to id,
-         "name" to this.name.value,
-         "quantity" to this.quantity.value.toInt(),
-         "notes" to this.notes.value,
-         "imageUrl" to imageUri,
-         "expirationDate" to expirationDate,
-         "createdOn" to createdOn,
-      )
+
+   private fun List<Map<String?, Any?>>?.toAlerts(): List<AlertEntity>? {
+      return this?.map { map ->
+         (AlertEntity(
+            id = map["id"].toString(),
+            name = map["name"].toString(),
+            quantity = map["quantity"].toString().toInt(),
+            notes = map["notes"].toString(),
+            imageUrl = map["imageUrl"].toString(),
+            expirationDate = LocalDate.parse(map["expirationDate"].toString()),
+            createdOn = LocalDateTime.parse(map["createdOn"].toString()),
+            state = BackupState.Uploaded,
+         ))
+      }
    }
 
-   private fun ManageAlertScreenState.toRemindersMapList(alertId: String, createdOn: LocalDateTime): List<HashMap<String, Any>> {
-      return reminders.map { reminder ->
-         hashMapOf(
-            "id" to reminder.id,
-            "alertId" to alertId,
-            "range" to reminder.range,
-            "value" to reminder.value,
-            "createdOn" to createdOn,
+   private fun List<Map<String?, Any?>>.toReminders(): List<ReminderEntity>? {
+      return this.map { map ->
+         ReminderEntity(
+            id = map["id"].toString(),
+            alertId = map["alertId"].toString(),
+            range = ReminderRange.valueOf(map["range"].toString()),
+            value = map["value"].toString().toInt(),
+            createdOn = LocalDateTime.parse(map["createdOn"].toString()),
          )
       }
    }

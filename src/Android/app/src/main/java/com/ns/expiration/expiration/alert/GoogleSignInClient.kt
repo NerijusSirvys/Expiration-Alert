@@ -78,4 +78,8 @@ class GoogleSignInClient(
          .setFilterByAuthorizedAccounts(false)
          .build()
    }
+
+   fun getUserId(): String {
+      return Firebase.auth.currentUser?.uid ?: ""
+   }
 }
