@@ -7,11 +7,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ns.expiration.expiration.alert.components.textFields.TextFieldState
-import com.ns.expiration.expiration.alert.repositories.AlertRepository
-import com.ns.expiration.expiration.alert.repositories.data.Reminder
-import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
+import com.ns.expiration.expiration.alert.extensions.toWebPStream
+import com.ns.expiration.expiration.alert.repositories.local.data.Reminder
+import com.ns.expiration.expiration.alert.repositories.local.data.ReminderRange
+import com.ns.expiration.expiration.alert.services.AlertService
 import com.ns.expiration.expiration.alert.utilities.DateTimeHelpers
-import com.ns.expiration.expiration.alert.utilities.toWebPStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +29,7 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 class ManageAlertScreenViewmodel(
    val alertId: String? = null,
-   val repository: AlertRepository,
+   val service: AlertService,
    val context: Context,
 ) : ViewModel() {
 
@@ -46,8 +46,7 @@ class ManageAlertScreenViewmodel(
    init {
       if (alertId != null) {
          viewModelScope.launch {
-            repository.getAlertById(alertId).collect { alertDetails ->
-
+            service.getAlertById(alertId).collect { alertDetails ->
                val bitmap: Bitmap? = BitmapFactory.decodeFile(alertDetails.imageUrl)
                _state.update {
                   it.copy(
@@ -133,7 +132,7 @@ class ManageAlertScreenViewmodel(
 
                   val imageFileName = "${state.name.value}_${id}.webp"
                   withContext(Dispatchers.IO) {
-                     val stream = state.image?.toWebPStream()
+                     val stream = state.image?.toWebPStream(10)
 
                      val path = stream?.let { bytes ->
                         val file = File(context.filesDir, imageFileName)
@@ -141,7 +140,7 @@ class ManageAlertScreenViewmodel(
                         file.absolutePath
                      } ?: ""
 
-                     repository.saveAlert(id, path, state)
+                     service.createAlert(id, path, state)
                   }
                   _channel.send(CreateAlertScreenEvents.AlertSavedSuccess)
                }

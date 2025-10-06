@@ -16,10 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ns.expiration.expiration.alert.R
 import com.ns.expiration.expiration.alert.components.CenteredMessage
 import com.ns.expiration.expiration.alert.components.PainterIcon
+import com.ns.expiration.expiration.alert.components.TopBar
 import com.ns.expiration.expiration.alert.components.buttons.FloatingActionButton
 import com.ns.expiration.expiration.alert.components.textFields.AppTextField
 import com.ns.expiration.expiration.alert.screens.home.components.alert.AlertCard
@@ -30,11 +32,19 @@ fun HomeScreenContent(
    state: HomeScreenState,
    onAction: (HomeScreenAction) -> Unit,
    onNavigateToNewAlert: () -> Unit,
-   onNavigateToDetails: (String) -> Unit
+   onNavigateToDetails: (String) -> Unit,
+   onMenuToggle: () -> Unit
 ) {
    Scaffold(
       containerColor = MaterialTheme.colorScheme.background,
       contentWindowInsets = WindowInsets(0.dp),
+      topBar = {
+         TopBar(
+            label = "Alerts",
+            primaryActionButtonIcon = painterResource(R.drawable.baseline_menu_24),
+            onPrimaryActionButton = onMenuToggle
+         )
+      },
       floatingActionButton = {
          FloatingActionButton(
             text = "New Alert",

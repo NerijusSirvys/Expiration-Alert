@@ -4,6 +4,8 @@ plugins {
    alias(libs.plugins.kotlin.compose)
    alias(libs.plugins.serialization)
    alias(libs.plugins.ksp)
+   alias(libs.plugins.google.gms.google.services)
+   alias(libs.plugins.google.firebase.crashlytics)
 }
 
 android {
@@ -11,7 +13,7 @@ android {
    compileSdk = 36
 
    defaultConfig {
-      applicationId = "com.ns.expiration.expiration.alert"
+      applicationId = "com.ns.expiration.alert"
       minSdk = 30
       targetSdk = 36
       versionCode = 1
@@ -61,6 +63,7 @@ dependencies {
    implementation(libs.koin.core)
    implementation(libs.koin.android)
    implementation(libs.koin.compose)
+   implementation(libs.koin.work.manager)
 
    // Room DB
    implementation(libs.room.runtime)
@@ -69,6 +72,15 @@ dependencies {
 
    // Work Manager
    implementation(libs.androidx.work.manager)
+
+   // Firebase
+   implementation(libs.googleid)
+   implementation(libs.androidx.credentials)
+   implementation(libs.androidx.credentials.play.services.auth)
+   implementation(libs.firebase.crashlytics)
+   implementation(libs.firebase.firestore)
+   implementation(libs.firebase.storage)
+   implementation(libs.firebase.auth)
 
    ksp(libs.room.compiler)
 

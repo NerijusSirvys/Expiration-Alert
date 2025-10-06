@@ -2,7 +2,7 @@ package com.ns.expiration.expiration.alert.screens.manage
 
 import coil3.Bitmap
 import com.ns.expiration.expiration.alert.components.textFields.TextFieldState
-import com.ns.expiration.expiration.alert.repositories.data.Reminder
+import com.ns.expiration.expiration.alert.repositories.local.data.Reminder
 
 data class ManageAlertScreenState(
    val name: TextFieldState = TextFieldState("", true),

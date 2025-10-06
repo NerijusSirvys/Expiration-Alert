@@ -1,4 +1,4 @@
-package com.ns.expiration.expiration.alert.repositories.data
+package com.ns.expiration.expiration.alert.repositories.local.data
 
 data class Reminder(
    val id: String,

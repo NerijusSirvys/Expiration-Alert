@@ -3,7 +3,7 @@ package com.ns.expiration.expiration.alert.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ns.expiration.expiration.alert.components.textFields.TextFieldState
-import com.ns.expiration.expiration.alert.repositories.AlertRepository
+import com.ns.expiration.expiration.alert.services.AlertService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 class HomeScreenViewmodel(
-   alertRepository: AlertRepository
+   alertService: AlertService
 ) : ViewModel() {
 
-   private var _data = alertRepository.getActiveAlertOverviews()
+   private var _data = alertService.getActiveAlertOverviews()
    private val _state = MutableStateFlow(HomeScreenState())
 
    val state = combine(_data, _state) { data, state ->

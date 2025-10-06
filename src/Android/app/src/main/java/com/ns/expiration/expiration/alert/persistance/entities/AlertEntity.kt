@@ -2,6 +2,7 @@ package com.ns.expiration.expiration.alert.persistance.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.ns.expiration.expiration.alert.repositories.local.data.BackupState
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -14,6 +15,7 @@ data class AlertEntity(
    val quantity: Int,
    val notes: String,
    val imageUrl: String,
+   val state: BackupState,
    val expirationDate: LocalDate,
    val createdOn: LocalDateTime,
    val modifiedOn: LocalDateTime? = null

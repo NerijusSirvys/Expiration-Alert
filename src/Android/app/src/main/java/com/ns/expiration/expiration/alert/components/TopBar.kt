@@ -16,9 +16,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TopBar(
    modifier: Modifier = Modifier,
-   navigationIcon: Painter? = null,
+   primaryActionButtonIcon: Painter? = null,
    actions: @Composable RowScope.() -> Unit = {},
-   onNavigation: () -> Unit = {},
+   onPrimaryActionButton: () -> Unit = {},
    label: String,
 ) {
    TopAppBar(
@@ -27,10 +27,10 @@ fun TopBar(
       title = { Text(text = label) },
       actions = actions,
       navigationIcon = {
-         navigationIcon?.let {
-            IconButton(onClick = onNavigation) {
+         primaryActionButtonIcon?.let {
+            IconButton(onClick = onPrimaryActionButton) {
                Icon(
-                  painter = navigationIcon,
+                  painter = primaryActionButtonIcon,
                   contentDescription = "Return icon button"
                )
             }

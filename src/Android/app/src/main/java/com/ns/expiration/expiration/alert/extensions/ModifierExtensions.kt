@@ -1,4 +1,4 @@
-package com.ns.expiration.expiration.alert.utilities
+package com.ns.expiration.expiration.alert.extensions
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.heightIn

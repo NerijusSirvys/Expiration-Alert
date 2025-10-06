@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import com.ns.expiration.expiration.alert.notifications.Notification
 import com.ns.expiration.expiration.alert.notifications.NotificationController
-import com.ns.expiration.expiration.alert.repositories.AlertRepository
-import com.ns.expiration.expiration.alert.repositories.data.ReminderRange
+import com.ns.expiration.expiration.alert.repositories.local.AlertOnDiskRepository
+import com.ns.expiration.expiration.alert.repositories.local.data.ReminderRange
 import com.ns.expiration.expiration.alert.schedulers.AlarmScheduler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -24,7 +24,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
       val pendingResult = goAsync()
 
-      val repo by KoinJavaComponent.inject<AlertRepository>(AlertRepository::class.java)
+      val repo by KoinJavaComponent.inject<AlertOnDiskRepository>(AlertOnDiskRepository::class.java)
       val today = LocalDate.now()
 
       val notificationController by KoinJavaComponent.inject<NotificationController>(NotificationController::class.java)

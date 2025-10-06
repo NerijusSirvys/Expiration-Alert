@@ -41,8 +41,8 @@ fun AlertDetailsScreenContent(
          TopBar(
             modifier = modifier,
             label = "Alert Details",
-            navigationIcon = painterResource(R.drawable.ic_back_arrow),
-            onNavigation = onNavigateBack,
+            primaryActionButtonIcon = painterResource(R.drawable.ic_back_arrow),
+            onPrimaryActionButton = onNavigateBack,
          )
       }
    ) { innerPadding ->
