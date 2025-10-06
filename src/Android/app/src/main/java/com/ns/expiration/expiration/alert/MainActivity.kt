@@ -17,6 +17,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
@@ -32,6 +33,8 @@ import com.ns.expiration.expiration.alert.screens.details.AlertDetailsScreen
 import com.ns.expiration.expiration.alert.screens.home.HomeScreen
 import com.ns.expiration.expiration.alert.screens.manage.ManageAlertScreen
 import com.ns.expiration.expiration.alert.ui.theme.ExpirationAlertTheme
+import com.ns.expiration.expiration.alert.utilities.ObserveAsEvents
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -44,12 +47,22 @@ class MainActivity : ComponentActivity() {
             val snackBarHostState = remember { SnackbarHostState() }
             val appViewmodel = koinViewModel<ApplicationViewModel>()
             val appState by appViewmodel.state.collectAsStateWithLifecycle()
+            val scope = rememberCoroutineScope()
 
             if (!hasRequiredPermissions()) {
                LocalActivity.current?.let { activity ->
                   ActivityCompat.requestPermissions(
                      activity, PERMISSIONS, 0
                   )
+               }
+            }
+
+            ObserveAsEvents(appViewmodel.messageChannel) { event ->
+               scope.launch {
+                  when (event) {
+                     SyncEvents.SyncComplete -> snackBarHostState.showSnackbar("Sync Complete")
+                     SyncEvents.SyncFailed -> snackBarHostState.showSnackbar("Sync Failed")
+                  }
                }
             }
 

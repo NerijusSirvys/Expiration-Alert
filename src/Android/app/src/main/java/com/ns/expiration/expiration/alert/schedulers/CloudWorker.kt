@@ -28,11 +28,13 @@ class CloudWorker(
       if (!googleClient.signedIn())
          return Result.retry()
 
+      val userId = googleClient.getUserId()
+
       // DELETE LOCAL ONES AND FROM THE CLOUD
       val alertsToDelete = localRepository.getAlertsWithReminders(BackupState.PendingDelete)
       alertsToDelete.forEach { alert ->
          try {
-            cloudRepository.deleteAlert(alert.alertId(), alert.reminderIds(), alert.imageName())
+            cloudRepository.deleteAlert(userId, alert.alertId(), alert.reminderIds(), alert.imageName())
             localRepository.deleteAlert(alert.alert.id)
          } catch (e: Exception) {
             Firebase.crashlytics.recordException(e)
@@ -43,7 +45,7 @@ class CloudWorker(
       val alertsToUpload = localRepository.getAlertsWithReminders(BackupState.PendingUpload)
       alertsToUpload.forEach { alert ->
          try {
-            cloudRepository.uploadAlert(alert.toAlertMap(), alert.toReminderMap(), alert.imageUrl())
+            cloudRepository.uploadAlert(userId, alert.toAlertMap(), alert.toReminderMap(), alert.imageUrl())
             localRepository.updateAlertState(alert.alertId(), BackupState.Uploaded)
          } catch (e: Exception) {
             Firebase.crashlytics.recordException(e)

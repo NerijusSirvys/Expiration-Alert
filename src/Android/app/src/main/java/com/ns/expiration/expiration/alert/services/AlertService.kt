@@ -52,7 +52,7 @@ class AlertService(
       return localRepo.getActiveAlertOverviews()
    }
 
-   suspend fun downloadBackups() {
+   suspend fun downloadBackups(onSuccess: () -> Unit, onFailure: () -> Unit) {
       try {
          val userId = googleClient.getUserId()
          if (userId.isEmpty()) return
@@ -70,8 +70,10 @@ class AlertService(
 
             localRepo.saveAlert(alert, reminders)
          }
+         onSuccess.invoke()
       } catch (e: Exception) {
-         Firebase.crashlytics.recordException(Exception("Reminders not found"))
+         Firebase.crashlytics.recordException(e)
+         onFailure.invoke()
       }
    }
 }
