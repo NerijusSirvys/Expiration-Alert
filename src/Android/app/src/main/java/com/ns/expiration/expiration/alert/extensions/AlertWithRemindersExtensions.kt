@@ -22,7 +22,7 @@ fun AlertWithReminders.toAlertMap(): HashMap<String, Any> {
       Constants.AlertProps.QUANTITY to this.alert.quantity,
       Constants.AlertProps.NOTES to this.alert.notes,
       Constants.AlertProps.IMAGE_URL to this.alert.imageUrl,
-      Constants.AlertProps.EXPIRATION_DATE to this.alert.expirationDate.toString(),
+      Constants.AlertProps.EXPIRATION_DATES to this.alert.expirationDates.map { it.toString() },
       Constants.AlertProps.CREATED_ON to this.alert.createdOn.toString(),
    )
 }

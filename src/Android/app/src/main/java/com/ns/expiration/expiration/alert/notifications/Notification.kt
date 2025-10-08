@@ -8,9 +8,12 @@ data class Notification(
 ) {
    companion object {
       fun fromAlert(alert: AlertEntity): Notification {
+
+         // TODO: Remove .first() call when multiple expiration dates are implemented
+         val date = alert.expirationDates.first()
          return Notification(
             id = alert.id,
-            text = "${alert.name} expires on ${alert.expirationDate}"
+            text = "${alert.name} expires on $date"
          )
       }
    }

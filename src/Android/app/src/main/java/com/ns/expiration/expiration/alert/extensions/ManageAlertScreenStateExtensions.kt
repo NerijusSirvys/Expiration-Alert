@@ -15,7 +15,7 @@ fun ManageAlertScreenState.toAlertMap(id: String, imageUri: String, createdOn: L
       Constants.AlertProps.QUANTITY to this.quantity.value.toInt(),
       Constants.AlertProps.NOTES to this.notes.value,
       Constants.AlertProps.IMAGE_URL to imageUri,
-      Constants.AlertProps.EXPIRATION_DATE to expirationDate,
+      Constants.AlertProps.EXPIRATION_DATES to expirationDate,
       Constants.AlertProps.CREATED_ON to createdOn,
    )
 }
@@ -53,7 +53,7 @@ fun ManageAlertScreenState.toAlertEntity(
    id: String,
    imageUri: String,
    createdOn: LocalDateTime,
-   expirationDate: LocalDate,
+   expirationDate: List<LocalDate>,
    state: BackupState
 ): AlertEntity {
    return AlertEntity(
@@ -62,7 +62,7 @@ fun ManageAlertScreenState.toAlertEntity(
       quantity = this.quantity.value.toInt(),
       notes = this.notes.value,
       imageUrl = imageUri,
-      expirationDate = expirationDate,
+      expirationDates = expirationDate,
       createdOn = createdOn,
       state = state
    )

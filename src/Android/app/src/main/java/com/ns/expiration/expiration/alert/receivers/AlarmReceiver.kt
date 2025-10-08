@@ -33,7 +33,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
          alerts.forEach { (alert, reminders) ->
             reminders.forEach { reminder ->
-               val reminderDate = getReminderDate(reminder.value.toLong(), reminder.range, alert.expirationDate)
+               val reminderDate = getReminderDate(reminder.value.toLong(), reminder.range, alert.expirationDates)
                val difference = Period.between(today, reminderDate)
 
                if (difference.isNegative || difference.isZero) {
@@ -57,7 +57,10 @@ class AlarmReceiver : BroadcastReceiver() {
       }
    }
 
-   fun getReminderDate(value: Long, range: ReminderRange, date: LocalDate): LocalDate? {
+   fun getReminderDate(value: Long, range: ReminderRange, dates: List<LocalDate>): LocalDate? {
+      // TODO: temp once multiple dates implemented, then resolve this
+      val date = dates.first()
+
       return when (range) {
          ReminderRange.Days -> date.minusDays(value)
          ReminderRange.Weeks -> date.minusWeeks(value)

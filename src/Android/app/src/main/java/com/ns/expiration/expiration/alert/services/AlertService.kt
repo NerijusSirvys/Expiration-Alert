@@ -22,9 +22,9 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class AlertService(
-   val localRepo: AlertOnDiskRepository,
-   val cloudRepo: AlertOnCloudRepository,
-   val googleClient: GoogleSignInClient
+   private val localRepo: AlertOnDiskRepository,
+   private val cloudRepo: AlertOnCloudRepository,
+   private val googleClient: GoogleSignInClient
 ) {
 
    suspend fun getAlertById(id: String): Flow<AlertDetails> {
@@ -39,7 +39,10 @@ class AlertService(
          .atZone(ZoneId.systemDefault())
          .toLocalDateTime()
 
-      val alert = request.toAlertEntity(id, imageUrl, createdOn, expirationDate, BackupState.PendingUpload)
+      // TODO: Remove when multiple expiration dates are implemented
+      val dates = listOf(expirationDate, expirationDate)
+
+      val alert = request.toAlertEntity(id, imageUrl, createdOn, dates, BackupState.PendingUpload)
       val reminders = request.toReminderEntities(id, createdOn)
       localRepo.saveAlert(alert, reminders)
    }

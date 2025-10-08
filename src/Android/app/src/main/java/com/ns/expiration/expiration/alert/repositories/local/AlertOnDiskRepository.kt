@@ -32,7 +32,8 @@ class AlertOnDiskRepository(
                name = it.alert.name,
                quantity = it.alert.quantity,
                image = it.alert.imageUrl,
-               expiration = it.alert.expirationDate.toString(),
+               // TODO: Remove .first() call when multiple expiration dates are implemented
+               expiration = it.alert.expirationDates.first().toString(),
                reminders = it.reminders.size
             )
          }
@@ -47,7 +48,8 @@ class AlertOnDiskRepository(
                name = alert.alert.name,
                quantity = alert.alert.quantity,
                notes = alert.alert.notes,
-               expirationDate = alert.alert.expirationDate.toString(),
+               // TODO: Remove .first() call when multiple expiration dates are implemented
+               expirationDate = alert.alert.expirationDates.first().toString(),
                reminders = alert.reminders.map {
                   Reminder(
                      id = it.id,
