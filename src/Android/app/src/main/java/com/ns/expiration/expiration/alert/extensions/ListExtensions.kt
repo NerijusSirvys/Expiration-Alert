@@ -16,7 +16,7 @@ fun List<Map<String?, Any?>>?.toAlerts(): List<AlertEntity>? {
          quantity = map[Constants.AlertProps.QUANTITY].toString().toInt(),
          notes = map[Constants.AlertProps.NOTES].toString(),
          imageUrl = map[Constants.AlertProps.IMAGE_URL].toString(),
-         expirationDate = LocalDate.parse(map[Constants.AlertProps.EXPIRATION_DATE].toString()),
+         expirationDates = (map[Constants.AlertProps.EXPIRATION_DATES] as List<*>).map { LocalDate.parse(it.toString()) },
          createdOn = LocalDateTime.parse(map[Constants.AlertProps.CREATED_ON].toString()),
          state = BackupState.Uploaded,
       ))

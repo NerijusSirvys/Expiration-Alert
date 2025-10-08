@@ -22,9 +22,9 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class AlertService(
-   val localRepo: AlertOnDiskRepository,
-   val cloudRepo: AlertOnCloudRepository,
-   val googleClient: GoogleSignInClient
+   private val localRepo: AlertOnDiskRepository,
+   private val cloudRepo: AlertOnCloudRepository,
+   private val googleClient: GoogleSignInClient
 ) {
 
    suspend fun getAlertById(id: String): Flow<AlertDetails> {
