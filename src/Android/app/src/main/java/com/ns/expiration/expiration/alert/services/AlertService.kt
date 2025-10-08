@@ -39,7 +39,10 @@ class AlertService(
          .atZone(ZoneId.systemDefault())
          .toLocalDateTime()
 
-      val alert = request.toAlertEntity(id, imageUrl, createdOn, expirationDate, BackupState.PendingUpload)
+      // TODO: Remove when multiple expiration dates are implemented
+      val dates = listOf(expirationDate, expirationDate)
+
+      val alert = request.toAlertEntity(id, imageUrl, createdOn, dates, BackupState.PendingUpload)
       val reminders = request.toReminderEntities(id, createdOn)
       localRepo.saveAlert(alert, reminders)
    }

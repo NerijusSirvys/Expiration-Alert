@@ -15,7 +15,7 @@ object Constants {
       const val QUANTITY = "quantity"
       const val NOTES = "notes"
       const val IMAGE_URL = "imageUrl"
-      const val EXPIRATION_DATE = "expirationDate"
+      const val EXPIRATION_DATES = "expirationDates"
       const val CREATED_ON = "createdOn"
    }
 }

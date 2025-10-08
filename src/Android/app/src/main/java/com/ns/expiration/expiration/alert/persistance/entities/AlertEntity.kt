@@ -16,7 +16,7 @@ data class AlertEntity(
    val notes: String,
    val imageUrl: String,
    val state: BackupState,
-   val expirationDate: LocalDate,
+   val expirationDates: List<LocalDate>,
    val createdOn: LocalDateTime,
    val modifiedOn: LocalDateTime? = null
 )
