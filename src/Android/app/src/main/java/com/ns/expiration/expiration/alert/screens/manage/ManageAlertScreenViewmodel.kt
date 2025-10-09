@@ -130,9 +130,10 @@ class ManageAlertScreenViewmodel(
 
                   val id = alertId ?: UUID.randomUUID().toString()
 
-                  val imageFileName = "${state.name.value}_${id}.webp"
+                  // TODO: Replace the 1 at the end of the image name if more than one image becomes allowed
+                  val imageFileName = "${id}_1.webp"
                   withContext(Dispatchers.IO) {
-                     val stream = state.image?.toWebPStream(10)
+                     val stream = state.image?.toWebPStream(quality = 10)
 
                      val path = stream?.let { bytes ->
                         val file = File(context.filesDir, imageFileName)
