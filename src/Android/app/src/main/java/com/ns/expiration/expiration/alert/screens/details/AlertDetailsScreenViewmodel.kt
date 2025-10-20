@@ -1,6 +1,5 @@
 package com.ns.expiration.expiration.alert.screens.details
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +17,6 @@ import kotlinx.coroutines.launch
 class AlertDetailsScreenViewmodel(
    val id: String,
    val alertService: AlertService,
-   val context: Context
 ) : ViewModel() {
 
    private val _state = MutableStateFlow(AlertDetailsScreenState())
@@ -52,7 +50,6 @@ class AlertDetailsScreenViewmodel(
          _state.update { it.copy(isLoading = true) }
          try {
             alertService.deleteAlert(id)
-            context.deleteFile("${_state.value.data.name}_${id}.webp")
 
             // make loading look better
             delay(1000)

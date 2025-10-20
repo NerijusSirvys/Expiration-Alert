@@ -31,45 +31,49 @@ class AlertOnCloudRepository(
       image.getFile(imageUri.toUri()).await()
    }
 
-   fun deleteAlert(userId: String, alertId: String, reminderIds: List<String>, imageName: String) {
-      val batch = firestore.batch()
-      val doc = firestore.collection("users").document(userId)
-      batch.delete(doc.collection("alerts").document(alertId))
+   suspend fun deleteAlert(userId: String, alertId: String, reminderIds: List<String>, imageName: String) {
+      try {
+         firestore.runBatch { batch ->
+            val doc = firestore.collection("users").document(userId)
+            batch.delete(doc.collection("alerts").document(alertId))
 
-      reminderIds.forEach { reminderId ->
-         val reminderDoc = firestore.collection("users").document(userId)
-         batch.delete(reminderDoc.collection("reminders").document(reminderId))
+            reminderIds.forEach { reminderId ->
+               val reminderDoc = firestore.collection("users").document(userId)
+               batch.delete(reminderDoc.collection("reminders").document(reminderId))
+            }
+         }.await()
+      } catch (e: Exception) {
+         Firebase.crashlytics.recordException(Exception("Failed to delete Alert With Reminders", e))
       }
 
-      batch.commit().addOnSuccessListener {
+      try {
          val image = storage.reference.child("${userId}/images/$alertId/$imageName")
-         image.delete()
-            .addOnFailureListener {
-               Firebase.crashlytics.recordException(it)
-            }
+         image.delete().await()
+      } catch (e: Exception) {
+         Firebase.crashlytics.recordException(Exception("Image deletion failed", e))
       }
    }
 
-   fun uploadAlert(userId: String, alert: HashMap<String, Any>, reminders: List<HashMap<String, Any>>, imageUri: String) {
+   suspend fun uploadAlert(userId: String, alert: HashMap<String, Any>, reminders: List<HashMap<String, Any>>, imageUri: String) {
 
       val alertId = alert["id"].toString()
 
       val userDoc = firestore.collection("users").document(userId)
-      firestore.runTransaction { thx ->
-         thx.set(userDoc.collection("alerts").document(alertId), alert)
+
+      firestore.runBatch { batch ->
+         batch.set(userDoc.collection("alerts").document(alertId), alert)
 
          reminders.forEach { reminder ->
-            thx.set(userDoc.collection("reminders").document(reminder["id"].toString()), reminder)
+            batch.set(userDoc.collection("reminders").document(reminder["id"].toString()), reminder)
          }
+      }.await()
 
-      }.addOnSuccessListener {
-         val imageName = imageUri.split("/").last()
-         val image = storage.reference.child("${userId}/images/$alertId/$imageName")
+      val imageName = imageUri.split("/").last()
+      val image = storage.reference.child("${userId}/images/$alertId/$imageName")
 
-         val file = File(imageUri)
-         if (file.exists()) {
-            image.putFile(file.toUri())
-         }
+      val file = File(imageUri)
+      if (file.exists()) {
+         image.putFile(file.toUri()).await()
       }
    }
 }

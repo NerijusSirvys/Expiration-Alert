@@ -5,51 +5,38 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.google.firebase.Firebase
 import com.google.firebase.crashlytics.crashlytics
-import com.ns.expiration.expiration.alert.GoogleSignInClient
-import com.ns.expiration.expiration.alert.extensions.alertId
-import com.ns.expiration.expiration.alert.extensions.imageName
 import com.ns.expiration.expiration.alert.extensions.imageUrl
-import com.ns.expiration.expiration.alert.extensions.reminderIds
 import com.ns.expiration.expiration.alert.extensions.toAlertMap
 import com.ns.expiration.expiration.alert.extensions.toReminderMap
 import com.ns.expiration.expiration.alert.repositories.cloud.AlertOnCloudRepository
 import com.ns.expiration.expiration.alert.repositories.local.AlertOnDiskRepository
-import com.ns.expiration.expiration.alert.repositories.local.data.BackupState
+import com.ns.expiration.expiration.alert.schedulers.data.CloudWorkerAction
+import com.ns.expiration.expiration.alert.schedulers.data.SchedulerConstants
 
 class CloudWorker(
    context: Context,
    params: WorkerParameters,
-   private val localRepository: AlertOnDiskRepository,
    private val cloudRepository: AlertOnCloudRepository,
-   private val googleClient: GoogleSignInClient
+   private val localRepository: AlertOnDiskRepository
 ) : CoroutineWorker(context, params) {
    override suspend fun doWork(): Result {
+      val alertId = inputData.getString(SchedulerConstants.ALERT_ID)
+      val userId = inputData.getString(SchedulerConstants.USER_ID)
+      val actionAsInt = inputData.getInt(SchedulerConstants.ACTION, 0)
 
-      if (!googleClient.signedIn())
+      try {
+         val action = CloudWorkerAction.entries[actionAsInt]
+         if (action == CloudWorkerAction.Save) {
+            val alert = localRepository.getAlertWithReminders(alertId!!)
+            cloudRepository.uploadAlert(userId!!, alert.toAlertMap(), alert.toReminderMap(), alert.imageUrl())
+         } else {
+            val reminderIds = inputData.getStringArray(SchedulerConstants.REMINDER_IDS)
+            val imageName = inputData.getString(SchedulerConstants.IMAGE_NAME)
+            cloudRepository.deleteAlert(userId!!, alertId!!, reminderIds!!.toList(), imageName!!)
+         }
+      } catch (e: Exception) {
+         Firebase.crashlytics.recordException(e)
          return Result.retry()
-
-      val userId = googleClient.getUserId()
-
-      // DELETE LOCAL ONES AND FROM THE CLOUD
-      val alertsToDelete = localRepository.getAlertsWithReminders(BackupState.PendingDelete)
-      alertsToDelete.forEach { alert ->
-         try {
-            cloudRepository.deleteAlert(userId, alert.alertId(), alert.reminderIds(), alert.imageName())
-            localRepository.deleteAlert(alert.alert.id)
-         } catch (e: Exception) {
-            Firebase.crashlytics.recordException(e)
-         }
-      }
-
-      // UPLOAD LOCAL ONES TO THE CLOUD
-      val alertsToUpload = localRepository.getAlertsWithReminders(BackupState.PendingUpload)
-      alertsToUpload.forEach { alert ->
-         try {
-            cloudRepository.uploadAlert(userId, alert.toAlertMap(), alert.toReminderMap(), alert.imageUrl())
-            localRepository.updateAlertState(alert.alertId(), BackupState.Uploaded)
-         } catch (e: Exception) {
-            Firebase.crashlytics.recordException(e)
-         }
       }
 
       return Result.success()
