@@ -8,6 +8,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.firebase.Firebase
 import com.google.firebase.crashlytics.crashlytics
@@ -18,14 +19,14 @@ import com.ns.expiration.expiration.alert.extensions.toAlertEntity
 import com.ns.expiration.expiration.alert.extensions.toAlerts
 import com.ns.expiration.expiration.alert.extensions.toReminderEntities
 import com.ns.expiration.expiration.alert.extensions.toReminders
+import com.ns.expiration.expiration.alert.notifications.Notification
+import com.ns.expiration.expiration.alert.notifications.NotificationController
 import com.ns.expiration.expiration.alert.repositories.cloud.AlertOnCloudRepository
 import com.ns.expiration.expiration.alert.repositories.local.AlertOnDiskRepository
 import com.ns.expiration.expiration.alert.repositories.local.data.AlertDetails
 import com.ns.expiration.expiration.alert.repositories.local.data.AlertOverview
 import com.ns.expiration.expiration.alert.repositories.local.data.BackupState
 import com.ns.expiration.expiration.alert.schedulers.CloudWorker
-import com.ns.expiration.expiration.alert.schedulers.data.CloudWorkerAction
-import com.ns.expiration.expiration.alert.schedulers.data.SchedulerConstants
 import com.ns.expiration.expiration.alert.screens.manage.ManageAlertScreenState
 import com.ns.expiration.expiration.alert.utilities.DateTimeHelpers
 import kotlinx.coroutines.delay
@@ -41,8 +42,8 @@ class AlertService(
    private val cloudRepo: AlertOnCloudRepository,
    private val googleClient: GoogleSignInClient,
    private val workManager: WorkManager,
+   private val notificationController: NotificationController,
    private val context: Context
-
 ) {
 
    suspend fun getAlertById(id: String): Flow<AlertDetails> {
@@ -67,9 +68,9 @@ class AlertService(
       val constraints = getWorkerConstraints()
 
       val data = Data.Builder()
-         .putString(SchedulerConstants.ALERT_ID, id)
-         .putString(SchedulerConstants.USER_ID, googleClient.getUserId())
-         .putInt(SchedulerConstants.ACTION, CloudWorkerAction.Save.ordinal)
+         .putString(CloudWorker.ALERT_ID, id)
+         .putString(CloudWorker.USER_ID, googleClient.getUserId())
+         .putInt(CloudWorker.ACTION, CloudWorker.Actions.Type.Save.ordinal)
          .build()
 
       val workRequest = getWorkRequest(constraints, data)
@@ -81,11 +82,11 @@ class AlertService(
       val alert = localRepo.getAlertWithReminders(id)
 
       val data = Data.Builder()
-         .putString(SchedulerConstants.ALERT_ID, id)
-         .putString(SchedulerConstants.USER_ID, googleClient.getUserId())
-         .putInt(SchedulerConstants.ACTION, CloudWorkerAction.Delete.ordinal)
-         .putStringArray(SchedulerConstants.REMINDER_IDS, alert.reminderIds().toTypedArray())
-         .putString(SchedulerConstants.IMAGE_NAME, alert.imageName())
+         .putString(CloudWorker.ALERT_ID, id)
+         .putString(CloudWorker.USER_ID, googleClient.getUserId())
+         .putInt(CloudWorker.ACTION, CloudWorker.Actions.Type.Delete.ordinal)
+         .putStringArray(CloudWorker.REMINDER_IDS, alert.reminderIds().toTypedArray())
+         .putString(CloudWorker.IMAGE_NAME, alert.imageName())
          .build()
 
       val workRequest = getWorkRequest(getWorkerConstraints(), data)
@@ -141,6 +142,40 @@ class AlertService(
          .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, Duration.ofMinutes(5))
          .setInputData(data)
          .build()
+   }
+
+   suspend fun scheduleBackupDownload() {
+      val prefs = context.applicationContext.getSharedPreferences("ex-alert", Context.MODE_PRIVATE)
+      val firstRun = prefs.getBoolean("first-run", true)
+      if (firstRun) {
+         notificationController.sendNotification(Notification("download", "Downloading Data..."))
+
+         val data = Data.Builder()
+            .putString(CloudWorker.USER_ID, googleClient.getUserId())
+            .putInt(CloudWorker.ACTION, CloudWorker.Actions.Type.Download.ordinal)
+            .build()
+
+         val workRequest = getWorkRequest(getWorkerConstraints(), data)
+         workManager.enqueueUniqueWork("backup-download", ExistingWorkPolicy.REPLACE, workRequest)
+
+         workManager.getWorkInfosForUniqueWorkFlow("backup-download")
+            .collect {
+               val workInfo = it.first { it.id == workRequest.id }
+
+               if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+                  val count = workInfo.outputData.getInt(CloudWorker.DOWNLOAD_COUNT, 0)
+                  notificationController.sendNotification(Notification("download", "Downloaded $count items"))
+
+                  val editor = prefs.edit()
+                  editor.putBoolean("first-run", false)
+                  editor.apply()
+               }
+
+               if (workInfo.state == WorkInfo.State.FAILED) {
+                  notificationController.sendNotification(Notification("download", "Download Failed"))
+               }
+            }
+      }
    }
 }
 

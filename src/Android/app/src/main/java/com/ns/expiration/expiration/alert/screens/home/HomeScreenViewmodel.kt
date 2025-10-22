@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class HomeScreenViewmodel(
    alertService: AlertService
@@ -29,6 +30,12 @@ class HomeScreenViewmodel(
       initialValue = HomeScreenState()
    )
 
+   init {
+      viewModelScope.launch {
+         alertService.scheduleBackupDownload()
+      }
+   }
+
    fun onAction(action: HomeScreenAction) {
       when (action) {
          is HomeScreenAction.UpdateSearchTerm -> updateSearchTerm(action.term)
@@ -41,4 +48,3 @@ class HomeScreenViewmodel(
       }
    }
 }
-

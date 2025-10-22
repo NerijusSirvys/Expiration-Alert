@@ -38,10 +38,9 @@ val appModule = module {
    single {
       WorkManager.getInstance(get())
    }
-   
+
    workerOf(::CloudWorker)
 
-   viewModelOf(::ApplicationViewModel)
    viewModelOf(::HomeScreenViewmodel)
    viewModelOf(::AlertDetailsScreenViewmodel)
    viewModel { (alertId: String) ->
