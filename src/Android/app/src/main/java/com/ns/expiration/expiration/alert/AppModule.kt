@@ -1,5 +1,6 @@
 package com.ns.expiration.expiration.alert
 
+import androidx.work.WorkManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.ns.expiration.expiration.alert.notifications.NotificationController
@@ -34,9 +35,12 @@ val appModule = module {
       FirebaseStorage.getInstance("gs://expiration-alert-d2ccd.firebasestorage.app")
    }
 
+   single {
+      WorkManager.getInstance(get())
+   }
+
    workerOf(::CloudWorker)
 
-   viewModelOf(::ApplicationViewModel)
    viewModelOf(::HomeScreenViewmodel)
    viewModelOf(::AlertDetailsScreenViewmodel)
    viewModel { (alertId: String) ->

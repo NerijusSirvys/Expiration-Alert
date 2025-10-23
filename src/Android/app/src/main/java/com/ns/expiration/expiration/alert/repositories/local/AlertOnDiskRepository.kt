@@ -24,6 +24,10 @@ class AlertOnDiskRepository(
       return alertDao.getAllAlertsWithReminders().first()
    }
 
+   suspend fun getAlertWithReminders(id: String): AlertWithReminders {
+      return alertDao.getAlertWithReminders(id)
+   }
+
    fun getActiveAlertOverviews(): Flow<List<AlertOverview>> {
       return alertDao.getAllAlertsWithReminders().mapLatest { dataList ->
          dataList.filter { it.alert.state != BackupState.PendingDelete }.map {
@@ -72,12 +76,9 @@ class AlertOnDiskRepository(
       return@withContext alertDao.deleteAlertWithReminders(id)
    }
 
-   suspend fun getAlertsWithReminders(state: BackupState): List<AlertWithReminders> {
-      return alertDao.getAlertsByState(state)
-   }
-
-   suspend fun saveAlert(alert: AlertEntity, reminders: List<ReminderEntity>) = withContext(Dispatchers.IO) {
-      alertDao.insertAlertWithReminders(AlertWithReminders(alert, reminders))
+   suspend fun saveAlert(alert: AlertEntity, reminders: List<ReminderEntity>?) = withContext(Dispatchers.IO) {
+      val reminderList = reminders ?: listOf()
+      alertDao.insertAlertWithReminders(AlertWithReminders(alert, reminderList))
    }
 
    suspend fun updateAlertState(id: String, state: BackupState) = withContext(Dispatchers.IO) {
