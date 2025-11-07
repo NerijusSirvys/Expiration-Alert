@@ -59,20 +59,23 @@ class CloudWorker(
             }
 
             Actions.Type.Download -> {
+               var counter = 0
                val alertMaps = cloudRepository.downloadAlerts(userId!!)
                val alerts = alertMaps.toAlerts()
                alerts?.forEach { alert ->
+                  counter++
                   cloudRepository.downloadAlertImage(userId, alert.imageUrl, alert.id)
 
                   // add the delay for better image loading. without it you get either partial image loaded or none
                   val reminderMaps = cloudRepository.downloadReminders(userId)
                   val reminders = reminderMaps.toReminders()
 
+                  println("Download Counter: $counter")
                   localRepository.saveAlert(alert, reminders)
-                  val workData = workDataOf(DOWNLOAD_COUNT to alertMaps?.size)
-
-                  return Result.success(workData)
                }
+
+               val workData = workDataOf(DOWNLOAD_COUNT to alertMaps?.size)
+               return Result.success(workData)
             }
          }
       } catch (e: Exception) {
